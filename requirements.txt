@@ -1,0 +1,7 @@
+flask
+jinja2
+jinja2-time
+jwcrypto
+simplejson
+watchdog
+werkzeug
