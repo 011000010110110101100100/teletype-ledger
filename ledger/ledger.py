@@ -21,7 +21,10 @@ from flask import render_template
 
 from markupsafe import escape
 
+from src import generate
+
 app = Flask(__name__)
+app.secret_key = generate.random_bytes(64)
 
 
 @app.route('/')
