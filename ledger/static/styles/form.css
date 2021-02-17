@@ -1,0 +1,239 @@
+/*
+* A web application implementing investment strategies
+* Copyright (C) 2021 011000010110110101100100
+*
+* This program is free software: you can redistribute it and/or modify
+* it under the terms of the GNU Affero General Public License as published
+* by the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU Affero General Public License for more details.
+*/
+form {
+    border-radius: var(--radius);
+    display: flex;
+    flex-flow: column;
+    margin: 0 auto;
+    max-width: 50%;
+}
+
+/*********
+ * Group *
+ *********/
+form .group {
+    border-radius: var(--radius);
+    display: flex;
+    flex: auto;
+    flex-flow: column;
+    margin: 0.625em 0;
+    padding: 0.625em;
+}
+
+form .group:nth-child(odd) {
+    background-color: var(--odd-color);
+}
+
+form .group:nth-child(even) {
+    background-color: var(--even-color);
+}
+
+/********
+ * Path *
+ ********/
+form .group a {
+    align-items: center;
+    border-radius: var(--radius);
+    color: var(--color);
+    display: flex;
+    flex: auto;
+    flex-flow: column;
+    justify-content: center;
+    margin: 0.3125em;
+    outline: none;
+    padding: 10px 0;
+    transition: all var(--timeout) ease-in-out;
+}
+
+form .group a:hover {
+    background-color: var(--hover-color);
+    text-decoration: none;
+}
+
+form .group a:focus,
+form .group a:active {
+    background-color: var(--active-color);
+    text-decoration: underline;
+}
+
+/*********
+ * Label *
+ *********/
+form label {
+    border-radius: var(--radius);
+    display: flex;
+    flex: auto;
+    flex-flow: column;
+    justify-content: center;
+    letter-spacing: var(--letter-spacing);
+    margin: 0.3125em;
+    padding: 0.625em;
+    min-height: 3.125em;
+    transition: all var(--timeout) ease-in-out;
+}
+
+form label:hover {
+    background-color: var(--hover-color);
+}
+
+/*********
+ * Input *
+ *********/
+form input[type="text"],
+form input[type="email"],
+form input[type="password"] {
+    background-color: var(--form-input-color);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    cursor: pointer;
+    display: flex;
+    flex: auto;
+    flex-flow: column;
+    justify-content: center;
+    margin: 0.3125em;
+    padding: 0.625em;
+    min-height: 3.125em;
+    outline: none;
+    text-align: center;
+    transition: all var(--timeout) ease-in-out;
+}
+
+form input[type="text"]:hover,
+form input[type="email"]:hover,
+form input[type="password"]:hover {
+    background-color: var(--hover-color);
+}
+
+form input[type="text"]:focus,
+form input[type="email"]:focus,
+form input[type="password"]:focus,
+form input[type="text"]:active,
+form input[type="email"]:active,
+form input[type="password"]:active {
+    background-color: var(--active-color);
+}
+
+/**********
+ * Button *
+ **********/
+form input[type="submit"] {
+    align-items: center;
+    background-color: var(--form-input-color);
+    border: 0.0625em solid var(--border-color);
+    border-radius: var(--radius);
+    cursor: pointer;
+    display: flex;
+    flex: auto;
+    flex-flow: column;
+    justify-content: center;
+    margin: 0.3125em;
+    min-height: 3.125em;
+    outline: none;
+    transition: all var(--timeout) ease-in-out;
+}
+
+form input[type="submit"]:hover {
+    background-color: var(--hover-color);
+}
+
+form input[type="submit"]:focus,
+form input[type="submit"]:active {
+    background-color: var(--focus-color);
+    transform: scale(var(--scale));
+}
+
+/************
+ * Dropdown *
+ ************/
+form .dropdown {
+    background-color: var(--form-input-color);
+    border: 0.0625em solid var(--border-color);
+    border-radius: var(--radius);
+    display: flex;
+    flex: auto;
+    flex-flow: column;
+    justify-content: center;
+    margin: 0.3125em;
+    padding: 0.3125em;
+    min-height: 3.125em;
+}
+
+form .dropdown .item {
+    align-items: center;
+    border-radius: var(--radius);
+    display: inline-flex;
+    flex: auto;
+    flex-flow: row nowrap;
+    min-height: 3.125em;
+}
+
+form .dropdown .item .value {
+    display: flex;
+    flex: 1 auto;
+    justify-content: flex-start;
+    padding: 0.9375em;
+    width: 80%;
+}
+
+form .dropdown .item .icon {
+    display: flex;
+    flex: 1 auto;
+    justify-content: center;
+    padding: 0.9375em;
+    width: 20%;
+}
+
+form .dropdown .select {
+    align-items: center;
+    display: flex;
+    flex: auto;
+    flex-flow: column nowrap;
+}
+
+form .dropdown .select .option {
+    display: flex;
+    flex: 1 auto;
+    justify-content: center;
+    padding: 0.9375em;
+    width: 100%;
+    border-radius: var(--radius);
+    min-height: 3.125em;
+}
+
+form .dropdown .item,
+form .dropdown .select .option {
+    cursor: pointer;
+    transition: all var(--timeout) ease-in-out;
+}
+
+form .dropdown .item:hover,
+form .dropdown .select .option:hover {
+    background-color: var(--hover-color);
+}
+
+form .dropdown .item:focus,
+form .dropdown .select .option:focus,
+form .dropdown .item:active,
+form .dropdown .select .option:active {
+    background-color: var(--focus-color);
+    transform: scale(var(--scale));
+}
+
+@media screen and (max-width: 768px) {
+    form {
+        margin: 0;
+        max-width: none;
+    }
+}

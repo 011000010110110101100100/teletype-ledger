@@ -1,0 +1,64 @@
+{#
+# A web application implementing investment strategies
+# Copyright (C) 2021 011000010110110101100100
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Affero General Public License as published
+# by the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Affero General Public License for more details.
+#
+# You should have received a copy of the GNU Affero General Public License
+#}
+{%- from 'macro.html' import menu_button %}
+{%- set stylesheets = [
+    'global', 'class', 'id', 'nav', 'article', 'form'
+] %}
+{%- set scripts = [
+    'main', 'requests'
+] %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>tty</title>
+    <link rel="shortcut icon" type="image/png" href="/static/images/favicon.svg">
+    {% for stylesheet in stylesheets %}
+    <link rel="stylesheet" href="/static/styles/{{stylesheet}}.css">
+    {%- endfor %}
+</head>
+
+<body>
+    {% if session %}
+    <nav>
+        <div id="nav" class="root">
+            {{ menu_button('nav-trade', 'fas fa-chart-line', 'trade') }}
+            {{ menu_button('nav-portfolio', 'fas fa-chart-pie', 'portfolio') }}
+            {{ menu_button('nav-records', 'fas fa-file-alt', 'records') }}
+            {{ menu_button('nav-taxes', 'fas fa-fax', 'taxes') }}
+            {{ menu_button('nav-tools', 'fas fa-tools', 'tools') }}
+            {{ menu_button('nav-settings', 'fas fa-cog', 'settings') }}
+        </div>
+    </nav>
+    {%- endif %}
+    <main>{% block main %}{% endblock %}</main>
+    {#- 
+     # scripts must be loaded in order! 
+     # scripts should ALWAYS be loaded last!  
+     #}
+    {#- Load Font Awesome API Library #}
+    <script src="https://kit.fontawesome.com/67be107c28.js" crossorigin="anonymous"></script>
+    {#- Modules #}
+    {% for script in scripts %}
+    <script src="/static/scripts/{{script}}.js"></script>
+    {% endfor %}
+</body>
+
+</html>

@@ -1,0 +1,44 @@
+/*
+* A web application implementing investment strategies
+* Copyright (C) 2021 011000010110110101100100
+*
+* This program is free software: you can redistribute it and/or modify
+* it under the terms of the GNU Affero General Public License as published
+* by the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU Affero General Public License for more details.
+*/
+article {
+    background-color: var(--article-color);
+}
+
+article section {
+    background-color: var(--section-color);
+}
+
+article,
+article section {
+    border-radius: var(--radius); 
+    margin: 0.625em auto;
+}
+
+article section,
+article section header,
+article section main {
+    padding: 0.9375em;
+}
+
+article section header {
+    font-size: var(--size-xl);
+    letter-spacing: var(--letter-spacing);
+}
+
+@media screen and (max-width: 768px) {
+    article section header {
+        font-size: var(--size-xl);
+    }
+}

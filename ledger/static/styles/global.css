@@ -1,0 +1,118 @@
+/*
+* A web application implementing investment strategies
+* Copyright (C) 2021 011000010110110101100100
+*
+* This program is free software: you can redistribute it and/or modify
+* it under the terms of the GNU Affero General Public License as published
+* by the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU Affero General Public License for more details.
+*/
+:root {
+    --delay: 500ms;
+    --timeout: 200ms;
+    --scale: 0.95;
+    --radius: 0.625em;
+    --size-s: 0.875em;
+    --size-m: 1em;
+    --size-l: 1.125em;
+    --size-xl: 1.5em;
+    --size-xxl: 2em;
+    --width-part: 95%;
+    --width-full: 100%;
+    --letter-spacing: 0.1875em;
+
+    /* Applied Theme */
+    --lt-color: black;
+    --lt-background-color: #fafafa;
+    --lt-border-color: darkgray;
+
+    --lt-hover-color: #d5e7ff;
+    --lt-focus-color: #aaccff;
+    --lt-active-color: #eef5ff;
+
+    --lt-icon-color: #bd2424;
+
+    --lt-status-bar-color: #f5f5f5;
+
+    --lt-article-color: #fafafa;
+    --lt-section-color: #f5f5f5;
+
+    --lt-odd-color: #f0f0f0;
+    --lt-even-color: #eaeaea;
+
+    --lt-form-input-color: #fafafa;
+
+    --lt-table-caption-color: #f5f5f5;
+
+    /* Dark Theme */
+    --dk-color: white;
+    --dk-background-color: black;
+    --dk-border-color: #808080;
+
+    --dk-hover-color: #065471;
+    --dk-focus-color: #0a91ab;
+    --dk-active-color: #204051;
+
+    --dk-icon-color: lightcoral;
+
+    --dk-status-bar-color: #111111;
+
+    --dk-article-color: black;
+    --dk-section-color: #111111;
+
+    --dk-odd-color: #212121;
+    --dk-even-color: #313131;
+
+    --dk-form-input-color: #212121;
+
+    --dk-table-caption-color: #212121;
+
+    /* Applied Theme */
+    --color: var(--lt-color);
+    --background-color: var(--lt-background-color);
+    --border-color: var(--lt-border-color);
+
+    --hover-color: var(--lt-hover-color);
+    --focus-color: var(--lt-focus-color);
+    --active-color: var(--lt-active-color);
+
+    --icon-color: var(--lt-icon-color);
+
+    --status-bar-color: var(--lt-status-bar-color);
+
+    --article-color: var(--lt-article-color);
+    --section-color: var(--lt-section-color);
+
+    --odd-color: var(--lt-odd-color);
+    --even-color: var(--lt-even-color);
+
+    --form-input-color: var(--lt-form-input-color);
+
+    --table-caption-color: var(--lt-table-caption-color);
+}
+
+* {
+    box-sizing: border-box;
+    font: 1em sans-serif, Helvetica, Verdana, Arial;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: var(--background-color);
+    color: var(--color);
+    margin: 0 auto;
+    padding-bottom: 3.125em;
+    width: var(--width-part);
+}
+
+@media screen and (max-width: 768px) {
+    body {
+        width: var(--width-full);
+    }
+}

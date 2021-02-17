@@ -1,0 +1,59 @@
+{#
+# A web application implementing investment strategies
+# Copyright (C) 2021 011000010110110101100100
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Affero General Public License as published
+# by the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Affero General Public License for more details.
+#
+# You should have received a copy of the GNU Affero General Public License
+#}
+{#######
+ # Nav #  
+ #######}
+{% macro menu_button(id, class, title) %}
+<div id="{{id}}" class="button" title="{{title}}">
+    <span class="{{class}}"></span>
+</div>
+{%- endmacro %}
+
+
+{########
+ # Form #
+ ########}
+{% macro form_input(name, label, type='text', required=false) %}
+<div class="group">
+    <label for="{{name}}">{{label}}</label>
+    {% if required %}
+    <input type="{{type}}" name="{{name}}" minlength=3 maxlength=100 required>
+    {% else %}
+    <input type="{{type}}" name="{{name}}" minlength=3 maxlength=100>
+    {% endif %}
+</div>
+{%- endmacro %}
+
+{% macro form_link(href, text) %}
+<div class="group">
+    {% if href is string and text is string %}
+    <a class="path" href="{{href}}">{{text}}</a>
+    {% elif href is iterable and text is iterable %}
+        {% for link, label in href, text %}
+    <a class="path" href="{{link}}">{{label}}</a>
+        {%- endfor %}
+    {% else %}
+    <p>Oops! Something went wrong...</p>
+    {%- endif %}
+</div>
+{%- endmacro %}
+
+{% macro form_button(text) %}
+<div class="group">
+    <input type="submit" value="{{text}}">
+</div>
+{%- endmacro %}

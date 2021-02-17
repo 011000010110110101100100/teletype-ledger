@@ -1,3 +1,4 @@
+{#
 # A web application implementing investment strategies
 # Copyright (C) 2021 011000010110110101100100
 #
@@ -12,33 +13,27 @@
 # GNU Affero General Public License for more details.
 #
 # You should have received a copy of the GNU Affero General Public License
-from flask import Flask
-from flask import request
-from flask import session
-from flask import redirect
-from flask import url_for
-from flask import render_template
+#}
+{% extends 'root.html' %}
 
-from markupsafe import escape
+{% from 'macro.html' import form_input %}
+{% from 'macro.html' import form_link %}
+{% from 'macro.html' import form_button %}
 
-app = Flask(__name__)
+{% block main %}
+<h1>Session ID: {{session}}</h1>
 
-
-@app.route('/')
-def root():
-    return render_template('root.html')
-
-
-@app.route('/login')
-def login():
-    return render_template('login.html')
-
-
-@app.route('/register')
-def register():
-    return render_template('register.html')
-
-
-@app.route('/password-reset')
-def password_reset():
-    return render_template('password-reset.html')
+<article>
+    <section>
+        <header>
+            Login
+        </header>
+        <form class="form" action="/login" method="post">
+            {{ form_input('email', 'Email', 'email', true) }}
+            {{ form_input('password', 'Password', 'password', true) }}
+            {{ form_button('Submit') }}
+            {{ form_link(['/register', 'Register'], ['/password-reset', 'Forgot Password?']) }}
+        </form>
+    </section>
+</article>
+{% endblock %}

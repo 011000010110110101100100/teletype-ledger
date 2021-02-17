@@ -1,0 +1,64 @@
+/*
+* A web application implementing investment strategies
+* Copyright (C) 2021 011000010110110101100100
+*
+* This program is free software: you can redistribute it and/or modify
+* it under the terms of the GNU Affero General Public License as published
+* by the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU Affero General Public License for more details.
+*/
+nav {
+    background-color: var(--background-color);
+    display: flex;
+    justify-content: center;
+    position:fixed;
+    bottom:0px;
+    left:0px;
+    right:0px;
+    height:50px;
+    margin-bottom:0px;
+}
+
+nav .root {
+    display: flex;
+    /* flex: auto; */
+    flex-flow: row nowrap;
+}
+
+nav .root .button {
+    border-radius: var(--radius);
+    color: var(--color);
+    display: inline-flex;
+    flex: auto;
+    align-items: center;
+    justify-content: center;
+    min-width: 100px;
+    padding: 15px;
+    text-decoration: none;
+    transition: all var(--timeout) ease-in-out;
+}
+
+nav .root .button:hover {
+    background-color: var(--hover-color);
+}
+
+nav .root .button:focus,
+nav .root .button:active {
+    background-color: var(--focus-color);
+    transform: scale(var(--scale));
+}
+
+nav .root .button .label {
+    margin-left: 10px;
+}
+
+@media screen and (max-width: 425px) {
+    nav .root .button {
+        min-width: 50px;
+    }
+}
