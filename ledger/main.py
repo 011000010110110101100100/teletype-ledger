@@ -12,6 +12,8 @@
 # GNU Affero General Public License for more details.
 #
 # You should have received a copy of the GNU Affero General Public License
+import time
+
 from flask import Flask
 from flask import request
 from flask import session
@@ -21,20 +23,37 @@ from flask import render_template
 
 from markupsafe import escape
 
+from src import constant
 from src import generate
 
 app = Flask(__name__)
-app.secret_key = generate.random_bytes(64)
+app.secret_key = generate.random_bytes()
+print('{key}'.format(key=app.secret_key))
 
 
 @app.route('/')
-def root():
-    return render_template('root.html')
+def index():
+    if 'sid' in session:
+        return render_template('index.html', session=session)
+    return redirect(url_for('login'))
 
 
-@app.route('/login')
+@app.route('/login', methods=['POST', 'GET'])
 def login():
-    return render_template('login.html')
+    if 'POST' == request.method:
+        session['sid'] = generate.random_bytes()
+        session['iat'] = int(time.time())
+        session['exp'] = constant.TIMEOUT + session['iat']
+        return redirect(url_for('index'))
+    if 'GET' == request.method and 'uid' in session:
+        return redirect(url_for('index'))
+    return render_template('login.html', session=session)
+
+
+@app.route('/logout')
+def logout():
+    session.pop('uid', None)
+    return redirect(url_for('index'))
 
 
 @app.route('/register')

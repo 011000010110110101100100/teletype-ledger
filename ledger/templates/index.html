@@ -15,9 +15,11 @@
 # You should have received a copy of the GNU Affero General Public License
 #}
 {%- from 'macro.html' import menu_button %}
+
 {%- set stylesheets = [
     'global', 'class', 'id', 'nav', 'article', 'form'
 ] %}
+
 {%- set scripts = [
     'main', 'requests'
 ] %}
@@ -36,7 +38,7 @@
 </head>
 
 <body>
-    {% if session %}
+    {% if 'uid' in session %}
     <nav>
         <div id="nav" class="root">
             {{ menu_button('nav-trade', 'fas fa-chart-line', 'trade') }}
@@ -58,7 +60,7 @@
     {#- Modules #}
     {% for script in scripts %}
     <script src="/static/scripts/{{script}}.js"></script>
-    {% endfor %}
+    {%- endfor %}
 </body>
 
 </html>
