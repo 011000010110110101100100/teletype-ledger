@@ -28,7 +28,6 @@ from src import generate
 
 app = Flask(__name__)
 app.secret_key = generate.random_bytes()
-print('{key}'.format(key=app.secret_key))
 
 
 @app.route('/')
