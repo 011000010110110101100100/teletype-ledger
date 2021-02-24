@@ -1,7 +1,6 @@
-flask
-jinja2
+bottle
+bcrypt
+Jinja2
 jinja2-time
-jwcrypto
-simplejson
-watchdog
-werkzeug
+lxml
+# mysql-connector>=2.2.9

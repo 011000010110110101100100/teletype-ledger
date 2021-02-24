@@ -38,7 +38,7 @@
 </head>
 
 <body>
-    {% if 'uid' in session %}
+    {% if session.sid %}
     <nav>
         <div id="nav" class="root">
             {{ menu_button('nav-trade', 'fas fa-chart-line', 'trade') }}
@@ -52,17 +52,17 @@
     {%- endif %}
     <main>{% block main %}{% endblock %}</main>
     {#- 
-     # scripts must be loaded in order! 
-     # scripts should ALWAYS be loaded last!  
+     # scripts must ALWAYS be loaded in order! 
+     # scripts must ALWAYS be loaded last!  
      #}
-    {#- Load Font Awesome API Library #}
-    <script src="https://kit.fontawesome.com/67be107c28.js" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/eruda"></script>
-    <script>eruda.init();</script>
-    {#- Modules #}
+    {#- Inject Modules #}
     {% for script in scripts %}
     <script src="/static/scripts/{{script}}.js"></script>
     {%- endfor %}
+    {#- Inject 3rd Party APIs #}
+    <script src="https://kit.fontawesome.com/67be107c28.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/eruda"></script>
+    <script>eruda.init();</script>
 </body>
 
 </html>

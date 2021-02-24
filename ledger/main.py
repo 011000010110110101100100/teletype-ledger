@@ -1,65 +1,45 @@
-# A web application implementing investment strategies
-# Copyright (C) 2021 011000010110110101100100
-#
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU Affero General Public License as published
-# by the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU Affero General Public License for more details.
-#
-# You should have received a copy of the GNU Affero General Public License
-import time
-
-from flask import Flask
-from flask import request
-from flask import session
-from flask import redirect
-from flask import url_for
-from flask import render_template
-
-from markupsafe import escape
-
-from src import constant
+#!/usr/bin/env python3
 from src import generate
+from src import constant
 
-app = Flask(__name__)
-app.secret_key = generate.random_bytes()
+from src.jinja import render
+from src.canister import session
+from src.canister import Canister
+from src.sql import SQL
+
+import bottle
+
+ledger = bottle.Bottle()
+ledger.install(Canister())
+
+session = constant.SESSION
 
 
-@app.route('/')
+@ledger.route('/static/<filepath:path>', name='static')
+def static(filepath):
+    return bottle.static_file(filepath, root='static')
+
+
+@ledger.route('/')
 def index():
-    if 'sid' in session:
-        return render_template('index.html', session=session)
-    return redirect(url_for('login'))
+    if session.sid:
+        return render('index.html', session=session)
+    return bottle.redirect('/login')
 
 
-@app.route('/login', methods=['POST', 'GET'])
+@ledger.route('/login', ['GET', 'POST'])
 def login():
-    if 'POST' == request.method:
-        session['sid'] = generate.random_bytes()
-        session['iat'] = int(time.time())
-        session['exp'] = constant.TIMEOUT + session['iat']
-        return redirect(url_for('index'))
-    if 'GET' == request.method and 'uid' in session:
-        return redirect(url_for('index'))
-    return render_template('login.html', session=session)
+    return render('login.html')
 
 
-@app.route('/logout')
-def logout():
-    session.pop('uid', None)
-    return redirect(url_for('index'))
-
-
-@app.route('/register')
+@ledger.route('/register', ['GET', 'POST'])
 def register():
-    return render_template('register.html')
+    return render('register.html')
 
 
-@app.route('/password-reset')
+@ledger.route('/password-reset', ['GET', 'POST'])
 def password_reset():
-    return render_template('password-reset.html')
+    return render('password-reset.html')
+
+
+ledger.run(host='localhost', port=8080, debug=True, reloader=True)
