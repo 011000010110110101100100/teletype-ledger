@@ -1,17 +1,17 @@
 # The MIT License (MIT)
-# 
+#
 # Copyright (c) 2016
-# 
+#
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
 # in the Software without restriction, including without limitation the rights
 # to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 # copies of the Software, and to permit persons to whom the Software is
 # furnished to do so, subject to the following conditions:
-# 
+#
 # The above copyright notice and this permission notice shall be included in all
 # copies or substantial portions of the Software.
-# 
+#
 # THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 # IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 # FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -40,9 +40,9 @@ import sys
 import time
 import threading
 
-from src import constant
 from src import generate
 
+from src.constant import constant
 from src.singleton import Singleton
 
 from jwcrypto import jwk
@@ -106,10 +106,10 @@ class Cookie(object):
         return self.__key
 
     def get(self):
-        return self.__request.get_cookie(self.key, secret=self.secret)
+        return self.__request.get_cookie(self.__key, secret=self.secret)
 
     def set(self, value):
-        self.__response.set_cookie(self.key, value, secret=self.secret)
+        self.__response.set_cookie(self.__key, value, secret=self.secret)
 
 
 class Cache(dict):
@@ -359,7 +359,6 @@ class Canister(object):
 
     def apply(self, callback, route):
         log = self.log
-        session = constant.SESSION
 
         def wrapper(*args, **kwargs):
             start = time.time()
@@ -376,6 +375,7 @@ class Canister(object):
 
             # session
             sid = self.cookie.get()
+            self.log.info(f'Cookie SID: {sid}')
 
             if sid and sid in self.cache:
                 auth = self.cache.get(sid)
@@ -387,11 +387,13 @@ class Canister(object):
                     sid = generate.random_bytes()
 
                 # create session id
+                self.cookie.set(sid)
                 auth = self.cache.create(sid)
                 log.info(f'Session created: {sid}')
 
             session.sid = sid
             session.auth = auth
+            session.user = False
 
             # thread name = <ip>-<sid[0:6]>
             threading.current_thread().name = request.remote_addr + '-' + sid[0:6]
@@ -415,6 +417,7 @@ class Canister(object):
                     bearer = cred
 
                 if bearer and session.auth.verify(bearer):
+                    session.user = True
                     self.cache.set(sid, auth)
                     self.log.info(f'Logged in as: {bearer}')
                 else:

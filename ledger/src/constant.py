@@ -15,10 +15,32 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 import string
 
-COOKIE_NAME = "sid"
-DIGITS = string.digits
-ENCODING = "utf-8"
-LETTERS = string.ascii_letters
-SIZE = 64
-SYMBOLS = DIGITS + LETTERS + "_"
-TIMEOUT = 3600
+from src.singleton import Singleton
+
+
+class Constant(Singleton):
+    def __init__(self):
+        super().__init__()
+
+    @property
+    def DIGITS(self):
+        return string.digits
+
+    @property
+    def LETTERS(self):
+        return string.ascii_letters
+
+    @property
+    def SYMBOLS(self):
+        return self.DIGITS + self.LETTERS + '_'
+
+    @property
+    def ENCODING(self):
+        return 'utf-8'
+
+    @property
+    def TIMEOUT(self):
+        return 3600
+
+
+constant = Constant()

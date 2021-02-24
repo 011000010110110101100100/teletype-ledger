@@ -15,19 +15,27 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 from src import generate
-from src import constant
 
+from src.constant import constant
 from src.jinja import render
 from src.canister import session
 from src.canister import Canister
 from src.sql import SQL
 
 import bottle
+import functools
 
 ledger = bottle.Bottle()
 ledger.install(Canister())
 
-session = constant.SESSION
+
+def auth_required(view):
+    @functools.wraps(view)
+    def wrapped_view(**kwargs):
+        if not session.user:
+            bottle.redirect('/login')
+        return view(**kwargs)
+    return wrapped_view
 
 
 @ledger.route('/static/<filepath:path>', name='static')
@@ -36,25 +44,24 @@ def static(filepath):
 
 
 @ledger.route('/')
+@auth_required
 def index():
-    if session.sid:
-        return render('index.html', session=session)
-    return bottle.redirect('/login')
+    return render('index.html', session=session)
 
 
 @ledger.route('/login', ['GET', 'POST'])
 def login():
-    return render('login.html')
+    return render('login.html', session=session)
 
 
 @ledger.route('/register', ['GET', 'POST'])
 def register():
-    return render('register.html')
+    return render('register.html', session=session)
 
 
 @ledger.route('/password-reset', ['GET', 'POST'])
 def password_reset():
-    return render('password-reset.html')
+    return render('password-reset.html', session=session)
 
 
 ledger.run(host='localhost', port=8080, debug=True, reloader=True)
