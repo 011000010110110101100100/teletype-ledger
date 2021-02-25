@@ -17,7 +17,7 @@ import os
 import sqlite3
 
 
-class Schema(object):
+class SQLSchema(object):
     @staticmethod
     def user():
         return 'CREATE TABLE user (' \
@@ -73,7 +73,6 @@ class SQLite(object):
         self.__master = 'sqlite_master'
         self.__database_path = 'db'
         self.__database_name = 'registrar'
-        self.__schema = Schema()
 
     @property
     def master(self):
@@ -94,10 +93,6 @@ class SQLite(object):
     @database_name.setter
     def database_name(self, value):
         self.__database_name = value
-
-    @property
-    def schema(self):
-        return self.__schema
 
     def set_registrar(self):
         self.__database_name = 'registrar'
@@ -169,6 +164,13 @@ class SQLite(object):
     def drop_table(self, name):
         return self.execute(f'DROP TABLE {name}')
 
+    def drop_database(self, name):
+        try:
+            os.remove(f'{self.database_path}/{name}.db')
+        except (FileNotFoundError,):
+            return False
+        return True
+
     def list_tables(self):
         result = []
         tables = self.select(self.master, 'tbl_name', 'type = "table"')
@@ -183,10 +185,3 @@ class SQLite(object):
                 name = entry.name.split('.')[0]
                 contents.append(name)
         return contents
-
-    def drop_database(self, name=None):
-        try:
-            os.remove(f'{self.database_path}/{name}.db')
-        except (FileNotFoundError,):
-            return False
-        return True

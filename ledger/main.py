@@ -23,10 +23,17 @@ from src.constant import constant
 from src.jinja import render
 from src.canister import session
 from src.canister import Canister
-from src.sql import SQL
+from src.sqlite import SQLSchema
+from src.sqlite import SQLite
 
 ledger = bottle.Bottle()
 ledger.install(Canister())
+
+session.schema = SQLSchema()
+
+session.sql = SQLite()
+session.sql.set_registrar()
+session.sql.execute(session.schema.user())
 
 
 def auth_required(view):
