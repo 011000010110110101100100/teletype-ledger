@@ -16,20 +16,14 @@
 import os
 import sqlite3
 
-DATABASE_PATH = 'db'
-DATABASE_MASTER = 'sqlite_master'
-DATABASE_DEFAULT_NAME = 'ledger'
-DATABASE_DEFAULT_TABLE = 'user'
 
-
-class SQLSchema(object):
+class Schema(object):
     @staticmethod
     def user():
         return 'CREATE TABLE user (' \
             'id INTEGER PRIMARY KEY NOT NULL, ' \
             'key TEXT NOT NULL, ' \
             'email TEXT NOT NULL, ' \
-            'username TEXT NOT NULL, ' \
             'password BLOB NOT NULL, ' \
             'salt BLOB NOT NULL)'
 
@@ -74,42 +68,42 @@ class SQLSchema(object):
             'theme TEXT NOT NULL)'
 
 
-class SQLMeta(object):
+class SQLite(object):
     def __init__(self):
-        self._name = None
-        self._schema = SQLSchema()
+        self.__master = 'sqlite_master'
+        self.__database_path = 'db'
+        self.__database_name = 'registrar'
+        self.__schema = Schema()
 
     @property
-    def name(self):
-        return self._name
+    def master(self):
+        return self.__master
 
-    @name.setter
-    def name(self, value):
-        self._name = value
+    @property
+    def database_path(self):
+        return self.__database_path
+
+    @database_path.setter
+    def database_path(self, value):
+        self.__database_path = value
+
+    @property
+    def database_name(self):
+        return self.__database_name
+
+    @database_name.setter
+    def database_name(self, value):
+        self.__database_name = value
 
     @property
     def schema(self):
-        return self._schema
+        return self.__schema
 
-    @property
-    def istable(self):
-        return isinstance(self, SQLTable)
-
-    @property
-    def isdatabase(self):
-        return isinstance(self, SQLDatabase)
-
-    def use(self, name=None):
-        self.name = name
+    def set_registrar(self):
+        self.__database_name = 'registrar'
 
     def connect(self):
-        if self.isdatabase:
-            return sqlite3.connect(self.path())
-        elif self.istable:
-            return sqlite3.connect(self.database.path())
-        else:
-            raise sqlite3.OperationalError(
-                'QueryError: SQLMeta.connect: failed to connect to database')
+        return sqlite3.connect(f'{self.database_path}/{self.database_name}.db')
 
     def execute(self, query):
         try:
@@ -118,22 +112,21 @@ class SQLMeta(object):
             database.commit()
             database.close()
         except (sqlite3.OperationalError,) as e:
-            print(f'QueryError: SQLMeta.execute: {e}')
+            print(f'Error: SQLite.execute: {e}')
             return None
         return True
 
     def cursor(self, query):
-        result = None
         try:
             database = self.connect()
             cursor = database.cursor()
             cursor.execute(query)
             result = cursor.fetchall()
             database.close()
+            return result
         except (sqlite3.OperationalError,) as e:
-            print(f'QueryError: SQLMeta.cursor: {e}')
+            print(f'Error: SQLite.cursor: {e}')
             return None
-        return result
 
     def query(self, callback=None, *args, **kwargs):
         try:
@@ -141,146 +134,59 @@ class SQLMeta(object):
             result = callback(database, *args, **kwargs)
             database.close()
         except (sqlite3.OperationalError,) as e:
-            print(f'QueryError: SQLMeta.query: {e}')
+            print(f'Error: SQLite.query: {e}')
             return None
         return result
 
-    def create(self, schema=None, name=None):
-        query = None, None
-        schema = {
-            'broker': self.schema.broker,
-            'record': self.schema.record,
-            'asset': self.schema.asset,
-            'setting': self.schema.setting
-        }.get(schema, self.schema.record)
-        if name is None:
-            query = schema()
-        else:
-            query = schema(name)
-        print(query)
-        return self.execute(query)
-
-    def select(self, name=None, cols=None, cond=None):
+    def select(self, table, cols=None, cond=None):
         query = None
-        if name is None:
-            name = self.name
         if cols is None:
             cols = '*'
         if cond is None:
-            query = f'SELECT {cols} FROM {name}'
+            query = f'SELECT {cols} FROM {table}'
         else:
-            query = f'SELECT {cols} FROM {name} where {cond}'
+            query = f'SELECT {cols} FROM {table} where {cond}'
         return self.cursor(query)
 
-
-class SQLTable(SQLMeta):
-    def __init__(self, name=None, database=None):
-        super(SQLTable, self).__init__()
-        self.name = name
-        self.database = database
-
-    @property
-    def name(self):
-        return self._name
-
-    @name.setter
-    def name(self, value):
-        if value is None:
-            self._name = DATABASE_DEFAULT_TABLE
-        else:
-            self._name = value
-
-    @property
-    def database(self):
-        return self._database
-
-    @database.setter
-    def database(self, value):
-        if value is None:
-            self._database = SQLDatabase()
-        elif isinstance(value, SQLDatabase):
-            self._database = value
-        else:
-            raise TypeError('object "value" must be of type SQLDatabase')
-
-    def list(self):
-        return self.database.tables()
-
-    def insert(self, vals, cols=None, table=None):
+    def insert(self, table, vals, cols=None):
         query = None
-        if table is None:
-            table = self.name
         if cols is None:
             query = f'INSERT INTO {table} VALUES {vals}'
         else:
             query = f'INSERT INTO {table} {cols} VALUES {vals}'
         return self.execute(query)
 
-    def update(self, name, set, cond=None):
+    def update(self, table, vals, cond=None):
         if cond is None:
-            query = f'UPDATE {name} SET {set}'
+            query = f'UPDATE {table} SET {vals}'
         else:
-            query = f'UPDATE {name} SET {set} WHERE {cond}'
+            query = f'UPDATE {table} SET {vals} WHERE {cond}'
         return self.execute(query)
 
-    def drop(self, name=None):
-        if name is None:
-            name = self.name
+    def drop_row(self, table, cond):
+        return self.execute(f'DELETE FROM {table} WHERE {cond}')
+
+    def drop_table(self, name):
         return self.execute(f'DROP TABLE {name}')
 
-    def delete(self, cond=None):
-        if cond is None:
-            raise sqlite3.OperationalError('object "cond" is required to delete a row')
-        return self.execute(f'DELETE FROM {self.name} WHERE {cond}')
-
-
-class SQLDatabase(SQLMeta):
-    def __init__(self, name=None):
-        super(SQLDatabase, self).__init__()
-        self.name = name
-        self.master = DATABASE_MASTER
-        self.table_name = DATABASE_DEFAULT_TABLE
-
-    @property
-    def name(self):
-        return self._name
-
-    @name.setter
-    def name(self, value):
-        if value is None:
-            self._name = DATABASE_DEFAULT_NAME
-        else:
-            self._name = value
-
-    def path(self, name=None):
-        if name is None:
-            return f'{DATABASE_PATH}/{self.name}.db'
-        return f'{DATABASE_PATH}/{name}.db'
-
-    def drop(self, name=None):
-        try:
-            os.remove(self.path(name))
-        except (FileNotFoundError,):
-            return False
-        return True
-
-    def list(self):
-        contents = []
-        for entry in os.scandir(DATABASE_PATH):
-            if entry.is_file():
-                name = entry.name.split('.')[0]
-                contents.append(name)
-        return contents
-
-    def tables(self):
+    def list_tables(self):
         result = []
         tables = self.select(self.master, 'tbl_name', 'type = "table"')
         for row in tables:
             result.append(row[0])
         return result
 
+    def list_databases(self):
+        contents = []
+        for entry in os.scandir(f'{self.database_path}'):
+            if entry.is_file():
+                name = entry.name.split('.')[0]
+                contents.append(name)
+        return contents
 
-class SQL(object):
-    def __init__(self):
-        self.database = SQLDatabase()
-        self.table = SQLTable(database=self.database)
+    def drop_database(self, name=None):
+        try:
+            os.remove(f'{self.database_path}/{name}.db')
+        except (FileNotFoundError,):
+            return False
+        return True

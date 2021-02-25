@@ -14,6 +14,9 @@
 #
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+import bottle
+import functools
+
 from src import generate
 
 from src.constant import constant
@@ -21,9 +24,6 @@ from src.jinja import render
 from src.canister import session
 from src.canister import Canister
 from src.sql import SQL
-
-import bottle
-import functools
 
 ledger = bottle.Bottle()
 ledger.install(Canister())

@@ -41,9 +41,7 @@ import time
 import threading
 
 from src import generate
-
 from src.constant import constant
-from src.singleton import Singleton
 
 from jwcrypto import jwk
 from jwcrypto import jws
@@ -53,7 +51,7 @@ from jwcrypto.common import json_decode
 session = threading.local()
 
 
-class Log(Singleton):
+class Log(object):
     def __init__(self, app):
         super(Log, self).__init__()
         self._log = None
