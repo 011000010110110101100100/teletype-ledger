@@ -36,6 +36,12 @@ from src.sqlite import SQLite
 app = Bottle()
 app.install(Canister())
 
+schema = SQLSchema()
+
+sql = SQLite()
+sql.set_registrar()
+sql.execute(schema.user())
+
 
 def auth_required(view):
     @wraps(view)
@@ -64,10 +70,20 @@ def login():
 
 @app.route('/register', ['GET', 'POST'])
 def register():
+    global schema
+
     if request.method == 'POST':
         email = request.forms.get('email')
         password = request.forms.get('password')
         repeat = request.forms.get('repeat')
+
+        has_email = sql.select('user', 'email', f'email = "{email}"')
+        if has_email:
+            return {
+                "status": "error",
+                "message": "email is already registered!",
+                "path": "/register"
+            }
 
         if password == repeat:
             salt = bcrypt.gensalt()
@@ -80,29 +96,17 @@ def register():
             }
 
         key = generate.random_str()
+        has_key = sql.select('user', 'key', f'key = "{key}"')
+        while has_key:
+            key = generate.random_str()
+            has_key = sql.select('user', 'key', f'key = "{key}"')
 
         cols = '(key, email, password, salt)'
         vals = key, email, hashed.decode(), salt.decode()
-
-        schema = SQLSchema()
-        sql = SQLite()
-        sql.set_registrar()
-        sql.execute(schema.user())
-
-        has_email = sql.select('user', 'email', f'email = "{email}"')
-
-        if has_email:
-            return {
-                "status": "error",
-                "message": "email is already registered!",
-                "path": "/register"
-            }
-
         sql.insert('user', vals, cols)
 
         sql.database_name = key
         schemas = schema.broker, schema.record, schema.setting
-
         for schema in schemas:
             sql.execute(schema())
 
@@ -115,7 +119,8 @@ def register():
         return {
             "status": "success",
             "message": "user registration succeeded!",
-            "path": "/"
+            "path": "/",
+            "claims": session.auth.pol.claims
         }
 
     return render('register.html', session=session)
