@@ -24,8 +24,8 @@ class SQLSchema(object):
             'id INTEGER PRIMARY KEY NOT NULL, ' \
             'key TEXT NOT NULL, ' \
             'email TEXT NOT NULL, ' \
-            'password BLOB NOT NULL, ' \
-            'salt BLOB NOT NULL)'
+            'password TEXT NOT NULL, ' \
+            'salt TEXT NOT NULL)'
 
     @staticmethod
     def broker():
@@ -33,7 +33,7 @@ class SQLSchema(object):
             'id INTEGER PRIMARY KEY NOT NULL, ' \
             'platform TEXT NOT NULL, ' \
             'key TEXT NOT NULL, ' \
-            'secret BLOB NOT NULL)'
+            'secret TEXT NOT NULL)'
 
     @staticmethod
     def record():

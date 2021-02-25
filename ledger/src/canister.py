@@ -54,7 +54,6 @@ session = threading.local()
 class Log(object):
     def __init__(self, app):
         super(Log, self).__init__()
-        self._log = None
         self.config(app)
 
     @property
