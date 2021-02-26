@@ -14,8 +14,6 @@
 #
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
-import bcrypt
-
 from functools import wraps
 
 from bottle import Bottle
@@ -75,7 +73,7 @@ def login():
 
         sql.set_registrar()
 
-        register = sql.select('user', 'key, password', f'email = "{email}"')
+        register = sql.select('user', 'key, password, salt', f'email = "{email}"')
         if not register:
             return {
                 "status": "error",
@@ -84,8 +82,8 @@ def login():
                 "payload": {}
             }
 
-        db_key, db_passwd = register[0]
-        result = bcrypt.checkpw(password.encode(), db_passwd.encode())
+        db_key, db_passwd, db_salt = register[0]
+        result = scrypt.verify(password, db_passwd, salt)
         if not result:
             return {
                 "status": "error",
@@ -147,9 +145,8 @@ def register():
             key = generate.random_str()
             has_key = sql.select('user', 'key', f'key = "{key}"')
 
-        salt = bcrypt.gensalt()
-        hashed = bcrypt.hashpw(password.encode(), salt)
-        vals = key, email, hashed.decode(), salt.decode()
+        hashed, salt = scrypt.derive(password)
+        vals = key, email, hashed, salt
         cols = '(key, email, password, salt)'
         sql.insert('user', vals, cols)
 
