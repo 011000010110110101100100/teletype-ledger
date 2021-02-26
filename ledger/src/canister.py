@@ -51,40 +51,33 @@ from jwcrypto.common import json_decode
 session = threading.local()
 
 
-class Log(object):
-    def __init__(self, app):
-        super(Log, self).__init__()
-        self.config(app)
+def build_logger(app):
+    path = app.config.get('canister.log_path', None)
+    level = app.config.get('canister.log_level', 'INFO')
+    days = int(app.config.get('canister.log_days', '30'))
+    log = logging.getLogger('canister')
 
-    @property
-    def log(self):
-        return self._log
+    if level == 'DISABLED':
+        return log
 
-    def config(self, app):
-        self._path = app.config.get('canister.log.path', None)
-        self._level = app.config.get('canister.log.level', 'DEBUG')
-        self._days = int(app.config.get('canister.log.days', '30'))
-        self._log = logging.getLogger('canister.log')
-
-    def build(self):
-        if 'DISABLED' == self._level:
-            return self._log
-        if self._path is None:
-            handler = logging.StreamHandler()
-        else:
-            os.makedirs(self._path, exist_ok=True)
-            handler = logging.handlers.TimedRotatingFileHandler(
-                os.path.join(self._path, 'log'),
-                when='midnight',
-                backupCount=int(self._days)
-            )
-        self._log.setLevel(self._level)
-        formatter = logging.Formatter(
-            '%(asctime)s %(levelname)-8s [%(threadName)s]   %(message)s'
+    if not path:
+        handler = logging.StreamHandler()
+    else:
+        os.makedirs(path, exist_ok=True)
+        handler = logging.handlers.TimedRotatingFileHandler(
+            os.path.join(path, 'log'),
+            when='midnight',
+            backupCount=int(days)
         )
-        handler.setFormatter(formatter)
-        self._log.addHandler(handler)
-        return self._log
+
+    log.setLevel(level)
+    formatter = logging.Formatter(
+        '%(asctime)s %(levelname)-8s [%(threadName)s]   %(message)s'
+    )
+    handler.setFormatter(formatter)
+    log.addHandler(handler)
+
+    return log
 
 
 class Cookie(object):
@@ -264,8 +257,7 @@ class Auth(object):
 class SessionCache(object):
     '''A thread safe session cache with a cleanup thread'''
 
-    def __init__(self):
-        log = logging.getLogger('canister.log')
+    def __init__(self, log):
         self.__lock = threading.Lock()
         self.__cache = Cache()
 
@@ -333,25 +325,24 @@ class Canister(object):
         pass
 
     def setup(self, app):
-        log = Log(app)
+        log = build_logger(app)
+
+        log.info('============')
+        log.info('Initializing')
+        log.info('============')
+        log.info('python version: ' + sys.version)
+        log.info('bottle version: ' + bottle.__version__)
+        log.info('------------------------------------------')
+        for k, v in app.config.items():
+            log.info('%-30s = %s' % (k, v))
+        log.info('------------------------------------------')
 
         self.app = app
-        self.log = log.build()
+        self.log = log
+        app.log = log
 
-        self.log.info('============')
-        self.log.info('Initializing')
-        self.log.info('============')
-        self.log.info('python version: ' + sys.version)
-        self.log.info('bottle version: ' + bottle.__version__)
-        self.log.info('------------------------------------------')
-        for k, v in app.config.items():
-            self.log.info('%-30s = %s' % (k, v))
-        self.log.info('------------------------------------------')
-
-        self.app.log = log
-
+        self.cache = SessionCache(log)
         self.cookie = Cookie()
-        self.cache = SessionCache()
         self.cors = app.config.get('canister.cors', None)
 
     def apply(self, callback, route):
@@ -372,7 +363,7 @@ class Canister(object):
 
             # session
             sid = self.cookie.get()
-            self.log.info(f'Cookie SID: {sid}')
+            log.info(f'Cookie SID: {sid}')
 
             if sid and sid in self.cache:
                 auth = self.cache.get(sid)
@@ -397,7 +388,7 @@ class Canister(object):
 
             # user
             header = request.headers.get('Authorization')
-            self.log.info(f'Header: {header}')
+            log.info(f'Header: {header}')
 
             if header:
                 bearer = None
@@ -405,9 +396,9 @@ class Canister(object):
 
                 if 2 == len(http):
                     typ, cred = http
-                    self.log.info(f'Authorization: {typ} {cred}')
+                    log.info(f'Authorization: {typ} {cred}')
                 else:
-                    self.log.warning(f'Invalid Authorization: {header}')
+                    log.warning(f'Invalid Authorization: {header}')
                     return None
 
                 if (typ and cred) and typ == 'Bearer':
@@ -416,9 +407,9 @@ class Canister(object):
                 if bearer and session.auth.verify(bearer):
                     session.user = True
                     self.cache.set(sid, auth)
-                    self.log.info(f'Logged in as: {bearer}')
+                    log.info(f'Logged in as: {bearer}')
                 else:
-                    self.log.error(f'Invalid Bearer Token: {bearer}')
+                    log.error(f'Invalid Bearer Token: {bearer}')
                     return None
 
             if session.sid != sid or session.auth is not auth:

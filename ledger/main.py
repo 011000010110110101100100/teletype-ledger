@@ -27,10 +27,10 @@ from src import scrypt
 
 from src.constant import constant
 from src.jinja import render
-from src.canister import session
-from src.canister import Canister
 from src.sqlite import SQLSchema
 from src.sqlite import SQLite
+from src.canister import Canister
+from src.canister import session
 
 app = Bottle()
 app.install(Canister())
@@ -83,7 +83,7 @@ def login():
             }
 
         db_key, db_passwd, db_salt = register[0]
-        result = scrypt.verify(password, db_passwd, salt)
+        result = scrypt.verify(password, db_passwd, db_salt)
         if not result:
             return {
                 "status": "error",
