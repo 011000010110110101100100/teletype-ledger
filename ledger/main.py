@@ -25,6 +25,7 @@ from bottle import redirect
 from bottle import static_file
 
 from src import generate
+from src import scrypt
 
 from src.constant import constant
 from src.jinja import render
@@ -65,34 +66,79 @@ def index():
 
 @app.route('/login', ['GET', 'POST'])
 def login():
+    global schema
+    global sql
+
+    if request.method == 'POST':
+        email = request.forms.get('email')
+        password = request.forms.get('password')
+
+        sql.set_registrar()
+
+        register = sql.select('user', 'key, password', f'email = "{email}"')
+        if not register:
+            return {
+                "status": "error",
+                "message": "does not exist",
+                "path": "/login",
+                "payload": {}
+            }
+
+        db_key, db_passwd = register[0]
+        result = bcrypt.checkpw(password.encode(), db_passwd.encode())
+        if not result:
+            return {
+                "status": "error",
+                "message": "invalid password given",
+                "path": "/login",
+                "payload": {}
+            }
+
+        session.schema = schema
+        session.sql = SQLite()
+        session.sql.database_name = db_key
+        session.key = db_key
+
+        cred = session.auth.sign()
+        response.add_header('Authorization', f'Bearer {cred}')
+
+        return {
+            "status": "success",
+            "message": "logged in",
+            "path": "/",
+            "payload": {}
+        }
+
     return render('login.html', session=session)
 
 
 @app.route('/register', ['GET', 'POST'])
 def register():
     global schema
+    global sql
 
     if request.method == 'POST':
         email = request.forms.get('email')
         password = request.forms.get('password')
         repeat = request.forms.get('repeat')
 
+        sql.set_registrar()
+
         has_email = sql.select('user', 'email', f'email = "{email}"')
         if has_email:
             return {
                 "status": "error",
                 "message": "email is already registered!",
-                "path": "/register"
+                "path": "/register",
+                "payload": {}
             }
 
-        if password == repeat:
-            salt = bcrypt.gensalt()
-            hashed = bcrypt.hashpw(password.encode(), salt)
-        else:
+        if password != repeat:
             return {
                 "status": "error",
                 "message": "passwords do not match!",
-                "path": "/register"
+                "path": "/register",
+                "payload": {}
             }
 
         key = generate.random_str()
@@ -101,17 +147,20 @@ def register():
             key = generate.random_str()
             has_key = sql.select('user', 'key', f'key = "{key}"')
 
-        cols = '(key, email, password, salt)'
+        salt = bcrypt.gensalt()
+        hashed = bcrypt.hashpw(password.encode(), salt)
         vals = key, email, hashed.decode(), salt.decode()
+        cols = '(key, email, password, salt)'
         sql.insert('user', vals, cols)
 
-        sql.database_name = key
+        session.schema = schema
+        session.sql = SQLite()
+        session.sql.database_name = key
+        session.key = key
+
         schemas = schema.broker, schema.record, schema.setting
         for schema in schemas:
-            sql.execute(schema())
-
-        session.schema = schema
-        session.sql = sql
+            session.sql.execute(schema())
 
         cred = session.auth.sign()
         response.add_header('Authorization', f'Bearer {cred}')
@@ -120,7 +169,7 @@ def register():
             "status": "success",
             "message": "user registration succeeded!",
             "path": "/",
-            "claims": session.auth.pol.claims
+            "payload": {}
         }
 
     return render('register.html', session=session)
