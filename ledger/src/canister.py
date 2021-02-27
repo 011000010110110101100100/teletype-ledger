@@ -416,6 +416,11 @@ class Canister(object):
                 self.cache.set(session.sid, session.auth)
 
             # args unpacking
+            # NOTE: DeprecationWarning: inspect.getargspec() is
+            # deprecated since Python 3.0, use inspect.signature() or
+            # inspect.getfullargspec()
+            # TODO: This has not been fixed because getargspec and
+            # getfullargspec return different objects
             sig = inspect.getargspec(callback)
 
             for a in sig.args:

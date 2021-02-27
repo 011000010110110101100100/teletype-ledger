@@ -156,8 +156,8 @@ def register():
         session.key = key
 
         schemas = schema.broker, schema.record, schema.setting
-        for schema in schemas:
-            session.sql.execute(schema())
+        for scheme in schemas:
+            session.sql.execute(scheme())
 
         cred = session.auth.sign()
         response.add_header('Authorization', f'Bearer {cred}')

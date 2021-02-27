@@ -19,10 +19,6 @@
 {%- set stylesheets = [
     'global', 'class', 'id', 'nav', 'article', 'form'
 ] %}
-
-{%- set scripts = [
-    'main', 'requests'
-] %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -52,14 +48,11 @@
     {%- endif %}
     <main>{% block main %}{% endblock %}</main>
     {#- 
-     # scripts must ALWAYS be loaded in order! 
      # scripts must ALWAYS be loaded last!  
      #}
-    {#- Inject Modules #}
-    {% for script in scripts %}
-    <script src="/static/scripts/{{script}}.js"></script>
-    {%- endfor %}
-    {#- Inject 3rd Party APIs #}
+    {#- Inject modules #}
+    {% block script %}{%- endblock %}
+    {#- Inject 3rd party modules #}
     <script src="https://kit.fontawesome.com/67be107c28.js" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/eruda"></script>
     <script>eruda.init();</script>

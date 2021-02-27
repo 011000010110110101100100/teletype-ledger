@@ -28,7 +28,7 @@
         <header>
             Login
         </header>
-        <form class="form" action="/login" method="post">
+        <form class="form" action="/login" method="POST">
             {{ form_input('email', 'Email', 'email', true) }}
             {{ form_input('password', 'Password', 'password', true) }}
             {{ form_button('Submit') }}
@@ -36,4 +36,24 @@
         </form>
     </section>
 </article>
+{% endblock %}
+
+{% block script %}
+<script>
+const form = document.querySelector('form');
+
+form.onsubmit = function () {
+    const email = document.querySelector('input[type="email"]');
+    const password = document.querySelector('input[type="password"]');
+    const submit = document.querySelector('input[type="submit"]');
+    // const request = new XMLHttpRequest();
+
+    console.log('form was submitted!');
+    console.log(`email: ${email.value}`);
+    console.log(`password: ${password.value}`);
+    console.log(this);
+
+    return false;
+}
+</script>
 {% endblock %}
