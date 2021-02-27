@@ -68,8 +68,8 @@ def login():
     global sql
 
     if request.method == 'POST':
-        email = request.forms.get('email')
-        password = request.forms.get('password')
+        email = request.json.get('email')
+        password = request.json.get('password')
 
         sql.set_registrar()
 
@@ -116,9 +116,9 @@ def register():
     global sql
 
     if request.method == 'POST':
-        email = request.forms.get('email')
-        password = request.forms.get('password')
-        repeat = request.forms.get('repeat')
+        email = request.json.get('email')
+        password = request.json.get('password')
+        repeat = request.json.get('repeat')
 
         sql.set_registrar()
 
@@ -131,7 +131,8 @@ def register():
                 "payload": {}
             }
 
-        if password != repeat:
+        has_passwd = password and password == repeat
+        if not has_passwd:
             return {
                 "status": "error",
                 "message": "passwords do not match!",
@@ -156,8 +157,8 @@ def register():
         session.key = key
 
         schemas = schema.broker, schema.record, schema.setting
-        for scheme in schemas:
-            session.sql.execute(scheme())
+        for query in schemas:
+            session.sql.execute(query())
 
         cred = session.auth.sign()
         response.add_header('Authorization', f'Bearer {cred}')
