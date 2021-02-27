@@ -40,20 +40,47 @@
 
 {% block script %}
 <script>
+const section = document.querySelector('section');
 const form = document.querySelector('form');
+let auth = null;
 
-form.onsubmit = function () {
+
+async function login() {
+    let request = new XMLHttpRequest();
+
+    request.open('POST', '/login');
+
+    request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+
+    request.addEventListener('load', function (event) {
+        section.innerHTML = event.target.responseText;
+    });
+
+    request.addEventListener('readystatechange', function (event) {
+        auth = request.getResponseHeader("Authorization");
+        if (!auth) {
+            request.abort();
+        }
+        console.log(`auth: ${auth}`);
+    });
+
+    request.send(FormData(form));
+
+    return request;
+};
+
+
+form.addEventListener('submit', function () {
     const email = document.querySelector('input[type="email"]');
     const password = document.querySelector('input[type="password"]');
     const submit = document.querySelector('input[type="submit"]');
-    // const request = new XMLHttpRequest();
+
+    let promise = login(section);
 
     console.log('form was submitted!');
-    console.log(`email: ${email.value}`);
-    console.log(`password: ${password.value}`);
-    console.log(this);
+    console.log(promise);
 
     return false;
-}
+});
 </script>
 {% endblock %}
