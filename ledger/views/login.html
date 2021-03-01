@@ -41,42 +41,59 @@
 {% block script %}
 <script>
 const form = document.querySelector('form');
-let auth = null;
-
-
-async function login() {
-    const request = new XMLHttpRequest();
-    const section = document.querySelector('section');
-    const email = document.querySelector('input[type="email"]');
-    const password = document.querySelector('input[type="password"]');
-    const payload = JSON.stringify({
-        "email": email.value,
-        "password": password.value
-    })
-
-    request.open('POST', '/login');
-    request.setRequestHeader("Content-Type", "application/json");
-    request.onload = function (event) {
-        section.innerHTML = event.target.responseText;
-    };
-    request.onreadystatechange = function (event) {
-        if (event.target.readyState === XMLHttpRequest.HEADERS_RECEIVED) {
-            auth = event.target.getResponseHeader("Authorization");
-            if (!Boolean(auth)) {
-                request.abort();
-            }
-            console.log(`Authorization: ${auth}`);
-        }
-    };
-    request.send(payload);
-    return request;
-};
-
 
 form.onsubmit = function () {
+    async function login() {
+        const request = new XMLHttpRequest();
+        const section = document.querySelector('section');
+        const email = document.querySelector('input[type="email"]');
+        const password = document.querySelector('input[type="password"]');
+        const payload = JSON.stringify({
+            "email": email.value,
+            "password": password.value
+        })
+
+        let jwt = {'type': null, 'credentials': null};
+    
+        request.open('POST', '/login');
+        request.setRequestHeader('Content-Type', 'application/json');
+
+        request.onreadystatechange = function (event) {
+            let header = null;
+            let auth = null;
+            if (event.target.readyState === XMLHttpRequest.HEADERS_RECEIVED) {
+                auth = event.target.getResponseHeader('Authorization');
+                if (Boolean(auth)) {
+                    header = auth.split(' ');
+                    jwt['type'] = header[0];
+                    jwt['credentials'] = header[1];
+                } else {
+                    request.abort();
+                }
+            }
+        };
+
+        request.onload = function (event) {
+            let body = null;
+            try {
+                body = JSON.parse(event.target.responseText);
+                if (body['status'] === 'success') {
+                    section.innerHTML = '<p>logging in...</p>';
+                } else {
+                    section.innerHTML = '<p>login failed...</p>';
+                }
+            } catch(e) {
+                console.log(e);
+            }
+        };
+
+        request.send(payload);
+
+        return jwt;
+    };
+
     let promise = login();
 
-    console.log('form was submitted!');
     console.log(promise);
 
     return false;
