@@ -28,7 +28,7 @@
         <header>
             Login
         </header>
-        <form class="form" action="/login" method="POST">
+        <form class="form" method="POST">
             {{ form_input('email', 'Email', 'email', true) }}
             {{ form_input('password', 'Password', 'password', true) }}
             {{ form_button('Submit') }}
@@ -40,45 +40,46 @@
 
 {% block script %}
 <script>
-const section = document.querySelector('section');
 const form = document.querySelector('form');
-const email = document.querySelector('input[type="email"]');
-const password = document.querySelector('input[type="password"]');
 let auth = null;
 
 
 async function login() {
-    let request = new XMLHttpRequest();
-
-    let payload = {
+    const request = new XMLHttpRequest();
+    const section = document.querySelector('section');
+    const email = document.querySelector('input[type="email"]');
+    const password = document.querySelector('input[type="password"]');
+    const payload = JSON.stringify({
         "email": email.value,
         "password": password.value
-    }
+    })
 
     request.open('POST', '/login');
     request.setRequestHeader("Content-Type", "application/json");
-    request.addEventListener('load', function (event) {
+    request.onload = function (event) {
         section.innerHTML = event.target.responseText;
-    });
-    request.addEventListener('readystatechange', function (event) {
-        auth = event.target.getResponseHeader("Authorization");
-        if (!auth) {
-            request.abort();
+    };
+    request.onreadystatechange = function (event) {
+        if (event.target.readyState === XMLHttpRequest.HEADERS_RECEIVED) {
+            auth = event.target.getResponseHeader("Authorization");
+            if (!Boolean(auth)) {
+                request.abort();
+            }
+            console.log(`Authorization: ${auth}`);
         }
-        console.log(`auth: ${auth}`);
-    });
-    request.send(JSON.stringify(payload));
+    };
+    request.send(payload);
     return request;
 };
 
 
-form.addEventListener('submit', function () {
+form.onsubmit = function () {
     let promise = login();
 
     console.log('form was submitted!');
     console.log(promise);
 
     return false;
-});
+};
 </script>
 {% endblock %}

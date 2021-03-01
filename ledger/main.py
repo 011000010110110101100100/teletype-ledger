@@ -68,8 +68,8 @@ def login():
     global sql
 
     if request.method == 'POST':
-        email = request.forms.get('email')
-        password = request.forms.get('password')
+        email = request.json.get('email')
+        password = request.json.get('password')
 
         sql.set_registrar()
 
