@@ -42,40 +42,38 @@
 <script>
 const section = document.querySelector('section');
 const form = document.querySelector('form');
+const email = document.querySelector('input[type="email"]');
+const password = document.querySelector('input[type="password"]');
 let auth = null;
 
 
 async function login() {
     let request = new XMLHttpRequest();
 
+    let payload = {
+        "email": email.value,
+        "password": password.value
+    }
+
     request.open('POST', '/login');
-
-    request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-
+    request.setRequestHeader("Content-Type", "application/json");
     request.addEventListener('load', function (event) {
         section.innerHTML = event.target.responseText;
     });
-
     request.addEventListener('readystatechange', function (event) {
-        auth = request.getResponseHeader("Authorization");
+        auth = event.target.getResponseHeader("Authorization");
         if (!auth) {
             request.abort();
         }
         console.log(`auth: ${auth}`);
     });
-
-    request.send(FormData(form));
-
+    request.send(JSON.stringify(payload));
     return request;
 };
 
 
 form.addEventListener('submit', function () {
-    const email = document.querySelector('input[type="email"]');
-    const password = document.querySelector('input[type="password"]');
-    const submit = document.querySelector('input[type="submit"]');
-
-    let promise = login(section);
+    let promise = login();
 
     console.log('form was submitted!');
     console.log(promise);
