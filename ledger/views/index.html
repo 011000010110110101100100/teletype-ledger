@@ -21,7 +21,6 @@
 ] %}
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -31,10 +30,11 @@
     {% for stylesheet in stylesheets %}
     <link rel="stylesheet" href="/static/styles/{{stylesheet}}.css">
     {%- endfor %}
+    {% block sheets %}{%- endblock %}
 </head>
-
 <body>
     {% if session.user %}
+        {% block nav %}{%- endblock %}
     <nav>
         <div id="nav" class="root">
             {{ menu_button('nav-trade', 'fas fa-chart-line', 'trade') }}
@@ -47,15 +47,10 @@
     </nav>
     {%- endif %}
     <main>{% block main %}{% endblock %}</main>
-    {#- 
-     # scripts must ALWAYS be loaded last!  
-     #}
-    {#- Inject modules #}
-    {% block script %}{%- endblock %}
-    {#- Inject 3rd party modules #}
+    {% block scripts %}{%- endblock %}
     <script src="https://kit.fontawesome.com/67be107c28.js" crossorigin="anonymous"></script>
+    <!-- add dev tools for mobile -->
     <script src="https://cdn.jsdelivr.net/npm/eruda"></script>
     <script>eruda.init();</script>
 </body>
-
 </html>

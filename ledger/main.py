@@ -25,7 +25,6 @@ from bottle import static_file
 from src import generate
 from src import scrypt
 
-from src.constant import constant
 from src.jinja import render
 from src.sqlite import SQLSchema
 from src.sqlite import SQLite
@@ -62,10 +61,18 @@ def index():
     return render('index.html', session=session)
 
 
+@app.route('/logout')
+@auth_required
+def logout():
+    session.cookie.set('ttyhdr', '')
+    redirect('/login')
+
+
 @app.route('/login', ['GET', 'POST'])
 def login():
     global schema
     global sql
+    global session
 
     if request.method == 'POST':
         email = request.json.get('email')
@@ -76,8 +83,8 @@ def login():
         register = sql.select('user', 'key, password, salt', f'email = "{email}"')
         if not register:
             return {
-                "status": "error",
-                "message": "does not exist",
+                "status": False,
+                "message": "{email} does not exist",
                 "path": "/login",
                 "payload": {}
             }
@@ -86,8 +93,8 @@ def login():
         result = scrypt.verify(password, db_passwd, db_salt)
         if not result:
             return {
-                "status": "error",
-                "message": "invalid password given",
+                "status": False,
+                "message": "invalid password was given",
                 "path": "/login",
                 "payload": {}
             }
@@ -97,23 +104,24 @@ def login():
         session.sql.database_name = db_key
         session.key = db_key
 
-        cred = session.auth.sign()
-        response.add_header('Authorization', f'Bearer {cred}')
+        hdr = session.auth.sign()
+        session.cookie.set('ttyhdr', hdr)
 
         return {
-            "status": "success",
-            "message": "logged in",
+            "status": True,
+            "message": f"logged in as {email}",
             "path": "/",
             "payload": {}
         }
 
-    return render('login.html', session=session)
+    return render('user/login.html', session=session)
 
 
 @app.route('/register', ['GET', 'POST'])
 def register():
     global schema
     global sql
+    global session
 
     if request.method == 'POST':
         email = request.json.get('email')
@@ -126,7 +134,7 @@ def register():
         if has_email:
             return {
                 "status": "error",
-                "message": "email is already registered!",
+                "message": "{email} is already registered",
                 "path": "/register",
                 "payload": {}
             }
@@ -135,7 +143,7 @@ def register():
         if not has_passwd:
             return {
                 "status": "error",
-                "message": "passwords do not match!",
+                "message": "passwords do not match",
                 "path": "/register",
                 "payload": {}
             }
@@ -160,22 +168,23 @@ def register():
         for query in schemas:
             session.sql.execute(query())
 
-        cred = session.auth.sign()
-        response.add_header('Authorization', f'Bearer {cred}')
+        hdr = session.auth.sign()
+        session.cookie.set('ttyhdr', hdr)
 
         return {
-            "status": "success",
-            "message": "user registration succeeded!",
+            "status": True,
+            "message": f"logged in as {email}",
             "path": "/",
             "payload": {}
         }
 
-    return render('register.html', session=session)
+    return render('user/register.html', session=session)
 
 
+# TODO
 @app.route('/password-reset', ['GET', 'POST'])
 def password_reset():
-    return render('password-reset.html', session=session)
+    return render('user/password-reset.html', session=session)
 
 
 app.run(host='localhost', port=8080, debug=True, reloader=True)

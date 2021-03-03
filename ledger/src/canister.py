@@ -82,7 +82,6 @@ def build_logger(app):
 
 class Cookie(object):
     def __init__(self):
-        self.__key = 'sid'
         self.__secret = generate.random_bytes()
         self.__response = bottle.response
         self.__request = bottle.request
@@ -91,15 +90,11 @@ class Cookie(object):
     def secret(self):
         return self.__secret
 
-    @property
-    def key(self):
-        return self.__key
+    def get(self, key):
+        return self.__request.get_cookie(key, secret=self.secret)
 
-    def get(self):
-        return self.__request.get_cookie(self.__key, secret=self.secret)
-
-    def set(self, value):
-        self.__response.set_cookie(self.__key, value, secret=self.secret)
+    def set(self, key, value):
+        self.__response.set_cookie(key, value, secret=self.secret)
 
 
 class Cache(dict):
@@ -354,62 +349,51 @@ class Canister(object):
             request = bottle.request
             response = bottle.response
 
-            # thread name = <ip>-...
-            threading.current_thread().name = request.remote_addr + '-...'
-            log.info(request.method + ' ' + request.url)
+            log.info(f'{request.method} {request.url}')
+
+            # acknowledged on client request
+            threading.current_thread().name = f'{request.remote_addr}-...'
 
             if self.cors:
                 response.headers['Access-Control-Allow-Origin'] = self.cors
 
             # session
-            sid = self.cookie.get()
-            log.info(f'Cookie SID: {sid}')
+            session.cookie = self.cookie
+
+            sid = session.cookie.get('ttysid')
+            log.debug(f'Cookie SID: {sid}')
 
             if sid and sid in self.cache:
                 auth = self.cache.get(sid)
-                log.info(f'Session found: {sid}')
+                log.debug(f'Session found: {sid}')
             else:
                 # avoid session id collisions
                 sid = generate.random_bytes()
                 while sid in self.cache:
                     sid = generate.random_bytes()
-
                 # create session id
-                self.cookie.set(sid)
+                session.cookie.set('ttysid', sid)
                 auth = self.cache.create(sid)
-                log.info(f'Session created: {sid}')
+                log.debug(f'Session created: {sid}')
 
             session.sid = sid
             session.auth = auth
             session.user = False
 
-            # thread name = <ip>-<sid[0:6]>
-            threading.current_thread().name = request.remote_addr + '-' + sid[0:6]
+            # acknowledged on server response
+            threading.current_thread().name = f'{request.remote_addr}-{sid[0:6]}'
 
             # user
-            header = request.headers.get('Authorization')
-            log.info(f'Header: {header}')
+            hdr = session.cookie.get('ttyhdr')
+            log.debug(f'Cookie TOK: {hdr}')
 
-            if header:
-                bearer = None
-                http = header.split()
-
-                if 2 == len(http):
-                    typ, cred = http
-                    log.info(f'Authorization: {typ} {cred}')
-                else:
-                    log.warning(f'Invalid Authorization: {header}')
-                    return None
-
-                if (typ and cred) and typ == 'Bearer':
-                    bearer = cred
-
-                if bearer and session.auth.verify(bearer):
+            if hdr:
+                if session.auth.verify(hdr):
                     session.user = True
                     self.cache.set(sid, auth)
-                    log.info(f'Logged in as: {bearer}')
+                    log.info(f'Logged in as: {hdr}')
                 else:
-                    log.error(f'Invalid Bearer Token: {bearer}')
+                    log.warning(f'Missing or Invalid token: {hdr}')
                     return None
 
             if session.sid != sid or session.auth is not auth:
