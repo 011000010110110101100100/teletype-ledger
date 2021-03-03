@@ -84,7 +84,7 @@ def login():
         if not register:
             return {
                 "status": False,
-                "message": "{email} does not exist",
+                "message": render('flash.html', title='Error', body=f'{email} does not exist'),
                 "path": "/login",
                 "payload": {}
             }
@@ -94,7 +94,7 @@ def login():
         if not result:
             return {
                 "status": False,
-                "message": "invalid password was given",
+                "message": render('flash.html', title='Error', body=f'invalid password was given'),
                 "path": "/login",
                 "payload": {}
             }
@@ -109,7 +109,7 @@ def login():
 
         return {
             "status": True,
-            "message": f"logged in as {email}",
+            "message": render('flash.html', title='Redirect', body=f'logged in as {email}'),
             "path": "/",
             "payload": {}
         }
@@ -134,7 +134,7 @@ def register():
         if has_email:
             return {
                 "status": "error",
-                "message": "{email} is already registered",
+                "message": render('flash.html', title='Error', body=f'{email} is already registered'),
                 "path": "/register",
                 "payload": {}
             }
@@ -143,7 +143,7 @@ def register():
         if not has_passwd:
             return {
                 "status": "error",
-                "message": "passwords do not match",
+                "message": render('flash.html', title='Error', body=f'passwords do not match'),
                 "path": "/register",
                 "payload": {}
             }
@@ -173,7 +173,7 @@ def register():
 
         return {
             "status": True,
-            "message": f"logged in as {email}",
+            "message": render('flash.html', title='Redirect', body=f'logged in as {email}'),
             "path": "/",
             "payload": {}
         }
