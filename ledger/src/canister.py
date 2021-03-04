@@ -387,11 +387,11 @@ class Canister(object):
             hdr = session.cookie.get('ttyhdr')
             log.debug(f'Cookie TOK: {hdr}')
 
-            if hdr:
+            if hdr and not session.auth.pol.expired:
                 if session.auth.verify(hdr):
                     session.user = True
                     self.cache.set(sid, auth)
-                    log.info(f'Logged in as: {hdr}')
+                    log.info(f'Logged in as: {session.email}')
                 else:
                     log.warning(f'Missing or Invalid token: {hdr}')
                     return None

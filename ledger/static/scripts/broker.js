@@ -13,17 +13,21 @@
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 * GNU Affero General Public License for more details.
 */
+const platform = document.querySelector('#platform');
+const dropdown = new FormDropdown(platform);
+dropdown.hide();
+
 document.querySelector('form').onsubmit = function (event) {
     const request = new XMLHttpRequest();
     const section = document.querySelector('section');
-    const email = event.target.elements[0];
-    const password = event.target.elements[1];
     const payload = JSON.stringify({
-        "email": email.value,
-        "password": password.value
+        "platform": dropdown.value,
+        "key": form.key.value,
+        "secret": form.secret.value
     });
+    console.log(payload);
 
-    request.open('POST', '/login');
+    request.open('POST', '/broker');
     request.setRequestHeader('Content-Type', 'application/json');
 
     request.onload = function (event) {

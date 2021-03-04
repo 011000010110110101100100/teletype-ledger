@@ -41,11 +41,22 @@ sql.set_registrar()
 sql.execute(schema.user())
 
 
+# redirect the user if they are not logged in
 def auth_required(view):
     @wraps(view)
     def wrapped_view(**kwargs):
         if not session.user:
             redirect('/login')
+        return view(**kwargs)
+    return wrapped_view
+
+
+# redirect the user if they are logged in
+def auth_redirect(view):
+    @wraps(view)
+    def wrapped_view(**kwargs):
+        if session.user:
+            redirect('/')
         return view(**kwargs)
     return wrapped_view
 
@@ -61,6 +72,24 @@ def index():
     return render('index.html', session=session)
 
 
+@app.route('/broker')
+@auth_required
+def broker():
+    return render('broker.html', session=session)
+
+
+@app.route('/record')
+@auth_required
+def record():
+    return render('record.html', session=session)
+
+
+@app.route('/asset')
+@auth_required
+def asset():
+    return render('asset.html', session=session)
+
+
 @app.route('/logout')
 @auth_required
 def logout():
@@ -69,6 +98,7 @@ def logout():
 
 
 @app.route('/login', ['GET', 'POST'])
+@auth_redirect
 def login():
     global schema
     global sql
@@ -99,6 +129,8 @@ def login():
                 "payload": {}
             }
 
+        session.email = email
+
         session.schema = schema
         session.sql = SQLite()
         session.sql.database_name = db_key
@@ -118,6 +150,7 @@ def login():
 
 
 @app.route('/register', ['GET', 'POST'])
+@auth_redirect
 def register():
     global schema
     global sql
@@ -130,34 +163,34 @@ def register():
 
         sql.set_registrar()
 
-        has_email = sql.select('user', 'email', f'email = "{email}"')
-        if has_email:
+        register = sql.select('user', 'email', f'email = "{email}"')
+        print(register)
+        if register:
             return {
-                "status": "error",
+                "status": False,
                 "message": render('flash.html', title='Error', body=f'{email} is already registered'),
                 "path": "/register",
                 "payload": {}
             }
 
-        has_passwd = password and password == repeat
-        if not has_passwd:
+        if password != repeat:
             return {
-                "status": "error",
+                "status": False,
                 "message": render('flash.html', title='Error', body=f'passwords do not match'),
                 "path": "/register",
                 "payload": {}
             }
 
         key = generate.random_str()
-        has_key = sql.select('user', 'key', f'key = "{key}"')
-        while has_key:
+        while sql.select('user', 'key', f'key = "{key}"'):
             key = generate.random_str()
-            has_key = sql.select('user', 'key', f'key = "{key}"')
 
         hashed, salt = scrypt.derive(password)
         vals = key, email, hashed, salt
         cols = '(key, email, password, salt)'
         sql.insert('user', vals, cols)
+
+        session.email = email
 
         session.schema = schema
         session.sql = SQLite()
@@ -183,6 +216,7 @@ def register():
 
 # TODO
 @app.route('/password-reset', ['GET', 'POST'])
+@auth_redirect
 def password_reset():
     return render('user/password-reset.html', session=session)
 

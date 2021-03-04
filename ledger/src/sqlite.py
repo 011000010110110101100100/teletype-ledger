@@ -64,7 +64,7 @@ class SQLSchema(object):
         return 'CREATE TABLE settings (' \
             'id INTEGER PRIMARY KEY NOT NULL, ' \
             'email TEXT NOT NULL, ' \
-            'password BLOB NOT NULL, ' \
+            'password TEXT NOT NULL, ' \
             'theme TEXT NOT NULL)'
 
 

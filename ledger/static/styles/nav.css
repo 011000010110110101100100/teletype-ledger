@@ -26,7 +26,6 @@ nav {
 
 nav .root {
     display: flex;
-    /* flex: auto; */
     flex-flow: row nowrap;
 }
 
@@ -58,6 +57,14 @@ nav .root .button .label {
 }
 
 @media screen and (max-width: 425px) {
+    nav {
+        justify-content: none;
+    }
+
+    nav .root {
+        flex: auto;
+    }
+
     nav .root .button {
         min-width: 50px;
     }

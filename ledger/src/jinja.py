@@ -26,6 +26,8 @@ jinja = jinja2.Environment(
     auto_reload=True
 )
 
+jinja.globals.update(zip=zip)
+
 
 def render(filename, *args, **kwargs):
     template = jinja.get_template(filename)

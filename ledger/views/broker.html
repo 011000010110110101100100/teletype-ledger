@@ -15,9 +15,8 @@
 # You should have received a copy of the GNU Affero General Public License
 #}
 {% extends 'index.html' %}
-
+{% from 'macro.html' import form_dropdown %}
 {% from 'macro.html' import form_input %}
-{% from 'macro.html' import form_link %}
 {% from 'macro.html' import form_button %}
 
 {% block styles %}
@@ -25,21 +24,27 @@
 <link rel="stylesheet" href="/static/styles/form.css">
 {% endblock %}
 
+{%- set platforms = [
+    'Coinbase', 'Coinbase Pro', 'Kraken', 'Gemini', 'Robinhood'
+] %}
+
 {% block main %}
 <article>
     <section>
-        <header>Register</header>
+        <header>Broker</header>
         <form class="form">
-            {{ form_input('email', 'Email', 'email', true) }}
-            {{ form_input('password', 'Password', 'password', true) }}
-            {{ form_input('repeat', 'Repeat Password', 'password', true) }}
-            {{ form_button('Sumbit') }}
-            {{ form_link('/login', 'Login') }}
+            {{ form_dropdown('Platform', 'platform', 'Select Platform', platforms) }}
+            {{ form_input('key', 'Key', 'text', true) }}
+            {{ form_input('secret', 'Secret', 'password', true) }}
+            {{ form_button('Submit') }}
         </form>
     </section>
 </article>
 {% endblock %}
 
 {% block scripts %}
-<script src="/static/scripts/register.js"></script>
+<script src="/static/scripts/list.js"></script>
+<script src="/static/scripts/state.js"></script>
+<script src="/static/scripts/dropdown.js"></script>
+<script src="/static/scripts/broker.js"></script>
 {% endblock %}

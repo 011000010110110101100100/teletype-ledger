@@ -38,6 +38,34 @@
 </div>
 {%- endmacro %}
 
+{% macro form_select(name, label, values, options) %}
+<div class="group">
+    <label for="{{name}}">{{label}}</label>
+    <select name="{{name}}">
+    {% for value, option in zip(values, options) %} 
+        <option value="{{value | lower}}">{{option}}</option>
+    {%- endfor %}
+    </select>
+</div>
+{%- endmacro %}
+
+{% macro form_dropdown(label, id, text, options) %}
+<div class="group">
+    <label>{{label}}</label>
+    <div id="{{id}}" class="dropdown">
+        <div class="item">
+            <span class="value">{{text}}</span>
+            <span class="icon fas fa-chevron-down"></span>
+        </div>
+        <div class="select">
+            {% for option in options %}
+            <span class="option">{{option}}</span>
+            {%- endfor %}
+        </div>
+    </div>
+</div>
+{%- endmacro %}
+
 {% macro form_link(href, text) %}
 <div class="group">
     {% if href is string and text is string %}
