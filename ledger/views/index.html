@@ -33,12 +33,11 @@
     {% if session.user %}
     <nav>
         <div id="nav" class="root">
-            {{ menu_button('nav-trade', 'fas fa-chart-line', 'trade') }}
-            {{ menu_button('nav-portfolio', 'fas fa-chart-pie', 'portfolio') }}
             {{ menu_button('nav-record', 'fas fa-file-alt', 'record') }}
-            {{ menu_button('nav-broker', 'fas fa-landmark', 'broker') }}
-            {{ menu_button('nav-taxes', 'fas fa-fax', 'taxes') }}
-            {{ menu_button('nav-settings', 'fas fa-cog', 'settings') }}
+            {{ menu_button('nav-trade', 'fas fa-chart-bar', 'trade') }}
+            {{ menu_button('nav-portfolio', 'fas fa-chart-pie', 'portfolio') }}
+            {{ menu_button('nav-donate', 'fas fa-donate', 'donate') }}
+            {{ menu_button('nav-menu', 'fas fa-bars', 'menu') }}
         </div>
     </nav>
     {%- endif %}
