@@ -41,5 +41,22 @@
 {% endblock %}
 
 {% block scripts %}
-<script src="/static/scripts/register.js"></script>
+<script src="/static/scripts/request.js"></script>
+<script>
+    document.querySelector('form').onsubmit = function (event) {
+        const section = document.querySelector('section');
+        const email = event.target.elements[0];
+        const password = event.target.elements[1];
+        const repeat = event.target.elements[2];
+        const payload = JSON.stringify({
+            "email": email.value,
+            "password": password.value,
+            "repeat": repeat.value
+        });
+    
+        postSessionRequest('/register', section, payload);
+    
+        return false;
+    };
+</script>
 {% endblock %}

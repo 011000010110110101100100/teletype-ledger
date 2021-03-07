@@ -23,23 +23,47 @@
 */
 async function getRequest(meta) {
     let xhr = new XMLHttpRequest();
+
     xhr.open("GET", meta.url);
     xhr.addEventListener("load", (event) => {
         meta.element.innerHTML = event.target.responseText;
     });
     xhr.send();
+
     return xhr;
 }
 
 
 async function postRequest(meta) {
     let xhr = new XMLHttpRequest();
+    let payload = JSON.stringify(meta.payload);
+
     xhr.open("POST", meta.url);
     xhr.setRequestHeader(meta.header, meta.value);
     xhr.addEventListener('load', (event) => {
         meta.element.innerHTML = event.target.responseText;
     });
-    payload = JSON.stringify(meta.payload);
     xhr.send(payload);
+
     return xhr;
+}
+
+
+async function postSessionRequest(path, element, payload) {
+    const request = new XMLHttpRequest();
+
+    request.open('POST', path);
+    request.setRequestHeader('Content-Type', 'application/json');
+    request.onload = function (event) {
+        try {
+            let json = JSON.parse(event.target.responseText);
+            element.innerHTML = json.view;
+            setTimeout(() => { window.location = json.path; }, 3000);
+        } catch(e) {
+            console.log(e);
+        }
+    };
+    request.send(payload);
+
+    return request;
 }

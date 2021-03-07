@@ -40,5 +40,20 @@
 {% endblock %}
 
 {% block scripts %}
-<script src="/static/scripts/login.js"></script>
+<script src="/static/scripts/request.js"></script>
+<script>
+    document.querySelector('form').onsubmit = function (event) {
+        const section = document.querySelector('section');
+        const email = event.target.elements[0];
+        const password = event.target.elements[1];
+        const payload = JSON.stringify({
+            "email": email.value,
+            "password": password.value
+        });
+    
+        postSessionRequest('/login', section, payload);
+    
+        return false;
+    };
+</script>
 {% endblock %}

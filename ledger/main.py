@@ -41,6 +41,31 @@ sql.set_registrar()
 sql.execute(schema.user())
 
 
+def payload(view, path, data, status):
+    return {
+        "status": status,
+        "view": view,
+        "path": path,
+        "data": data
+    }
+
+
+# generate a status page
+def flash(title, body):
+    return render('flash.html', title=title, body=body)
+
+
+def set_session(email, key):
+    global session
+    global schema
+
+    session.email = email
+    session.schema = schema
+    session.sql = SQLite()
+    session.sql.database_name = key
+    session.key = key
+
+
 # redirect the user if they are not logged in
 def auth_required(view):
     @wraps(view)
@@ -112,39 +137,21 @@ def login():
 
         register = sql.select('user', 'key, password, salt', f'email = "{email}"')
         if not register:
-            return {
-                "status": False,
-                "message": render('flash.html', title='Error', body=f'{email} does not exist'),
-                "path": "/login",
-                "payload": {}
-            }
+            view = flash('Error', f'{email} does not exist')
+            return payload(view, '/login', {}, False)
 
         db_key, db_passwd, db_salt = register[0]
         result = scrypt.verify(password, db_passwd, db_salt)
         if not result:
-            return {
-                "status": False,
-                "message": render('flash.html', title='Error', body=f'invalid password was given'),
-                "path": "/login",
-                "payload": {}
-            }
+            view = flash('Error', 'invalid password was given')
+            return payload(view, '/login', {}, False)
 
-        session.email = email
-
-        session.schema = schema
-        session.sql = SQLite()
-        session.sql.database_name = db_key
-        session.key = db_key
-
+        set_session(email, db_key)
         hdr = session.auth.sign()
         session.cookie.set('ttyhdr', hdr)
 
-        return {
-            "status": True,
-            "message": render('flash.html', title='Redirect', body=f'logged in as {email}'),
-            "path": "/",
-            "payload": {}
-        }
+        view = flash('Redirect', f'logged in as {email}')
+        return payload(view, '/', {}, True)
 
     return render('user/login.html', session=session)
 
@@ -162,24 +169,14 @@ def register():
         repeat = request.json.get('repeat')
 
         sql.set_registrar()
-
         register = sql.select('user', 'email', f'email = "{email}"')
-        print(register)
         if register:
-            return {
-                "status": False,
-                "message": render('flash.html', title='Error', body=f'{email} is already registered'),
-                "path": "/register",
-                "payload": {}
-            }
+            view = flash('Error', f'{email} is already registered')
+            return payload(view, '/register', {}, False)
 
         if password != repeat:
-            return {
-                "status": False,
-                "message": render('flash.html', title='Error', body=f'passwords do not match'),
-                "path": "/register",
-                "payload": {}
-            }
+            view = flash('Error', 'passwords do not match')
+            return payload(view, '/register', {}, False)
 
         key = generate.random_str()
         while sql.select('user', 'key', f'key = "{key}"'):
@@ -190,26 +187,16 @@ def register():
         cols = '(key, email, password, salt)'
         sql.insert('user', vals, cols)
 
-        session.email = email
-
-        session.schema = schema
-        session.sql = SQLite()
-        session.sql.database_name = key
-        session.key = key
-
-        schemas = schema.broker, schema.record, schema.setting
+        set_session(email, key)
+        schemas = schema.broker(), schema.record(), schema.setting()
         for query in schemas:
-            session.sql.execute(query())
+            session.sql.execute(query)
 
         hdr = session.auth.sign()
         session.cookie.set('ttyhdr', hdr)
 
-        return {
-            "status": True,
-            "message": render('flash.html', title='Redirect', body=f'logged in as {email}'),
-            "path": "/",
-            "payload": {}
-        }
+        view = flash('Redirect', f'logged in as {email}')
+        return payload(view, '/', {}, True)
 
     return render('user/register.html', session=session)
 
