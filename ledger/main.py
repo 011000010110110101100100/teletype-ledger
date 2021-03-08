@@ -32,6 +32,7 @@ from src.canister import Canister
 from src.canister import session
 
 app = Bottle()
+app.config.update('canister', log_level='DEBUG')
 app.install(Canister())
 
 schema = SQLSchema()
@@ -60,7 +61,7 @@ def set_session(email, key):
     global schema
 
     session.email = email
-    session.schema = schema
+    session.schema = SQLSchema()
     session.sql = SQLite()
     session.sql.database_name = key
     session.key = key
@@ -119,6 +120,7 @@ def asset():
 @auth_required
 def logout():
     session.cookie.set('ttyhdr', '')
+    app.log.info('Logout: session destroyed')
     redirect('/login')
 
 
@@ -132,16 +134,23 @@ def login():
     if request.method == 'POST':
         email = request.json.get('email')
         password = request.json.get('password')
+        app.log.debug(f'Login: email: {email}')
+        app.log.debug(f'Login: password: {password}')
 
         sql.set_registrar()
+        app.log.debug(f'Login: database: {sql.database_name}')
 
         register = sql.select('user', 'key, password, salt', f'email = "{email}"')
+        app.log.debug(f'Login: register: {register}')
+
         if not register:
             view = flash('Error', f'{email} does not exist')
             return payload(view, '/login', {}, False)
 
         db_key, db_passwd, db_salt = register[0]
+        app.log.debug(f'Login: key, pass, salt: {db_key}, {db_passwd}, {db_salt}')
         result = scrypt.verify(password, db_passwd, db_salt)
+        app.log.debug(f'Login: result: {result}')
         if not result:
             view = flash('Error', 'invalid password was given')
             return payload(view, '/login', {}, False)
@@ -149,11 +158,12 @@ def login():
         set_session(email, db_key)
         hdr = session.auth.sign()
         session.cookie.set('ttyhdr', hdr)
+        app.log.info('Login: user session created')
 
         view = flash('Redirect', f'logged in as {email}')
         return payload(view, '/', {}, True)
 
-    return render('user/login.html', session=session)
+    return render('session/login.html', session=session)
 
 
 @app.route('/register', ['GET', 'POST'])
@@ -167,9 +177,16 @@ def register():
         email = request.json.get('email')
         password = request.json.get('password')
         repeat = request.json.get('repeat')
+        app.log.debug(f'Register: email: {email}')
+        app.log.debug(f'Register: password: {password}')
+        app.log.debug(f'Register: repeat: {repeat}')
 
         sql.set_registrar()
+        app.log.debug(f'Register: database: {sql.database_name}')
+
         register = sql.select('user', 'email', f'email = "{email}"')
+        app.log.debug(f'Register: register: {register}')
+
         if register:
             view = flash('Error', f'{email} is already registered')
             return payload(view, '/register', {}, False)
@@ -179,10 +196,14 @@ def register():
             return payload(view, '/register', {}, False)
 
         key = generate.random_str()
+        app.log.debug(f'Register: key: {key}')
+
         while sql.select('user', 'key', f'key = "{key}"'):
             key = generate.random_str()
 
         hashed, salt = scrypt.derive(password)
+        app.log.debug(f'Register: hashed, salt: {hashed}, {salt}')
+
         vals = key, email, hashed, salt
         cols = '(key, email, password, salt)'
         sql.insert('user', vals, cols)
@@ -194,18 +215,19 @@ def register():
 
         hdr = session.auth.sign()
         session.cookie.set('ttyhdr', hdr)
+        app.log.info('Register: user session created')
 
         view = flash('Redirect', f'logged in as {email}')
         return payload(view, '/', {}, True)
 
-    return render('user/register.html', session=session)
+    return render('session/register.html', session=session)
 
 
 # TODO
 @app.route('/password-reset', ['GET', 'POST'])
 @auth_redirect
 def password_reset():
-    return render('user/password-reset.html', session=session)
+    return render('session/reset.html', session=session)
 
 
 app.run(host='localhost', port=8080, debug=True, reloader=True)

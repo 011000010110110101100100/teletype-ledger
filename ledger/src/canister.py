@@ -349,7 +349,8 @@ class Canister(object):
             request = bottle.request
             response = bottle.response
 
-            log.info(f'{request.method} {request.url}')
+            log.info(f'Canister: request.method: {request.method}')
+            log.info(f'Canister: request.url: {request.url}')
 
             # acknowledged on client request
             threading.current_thread().name = f'{request.remote_addr}-...'
@@ -361,11 +362,10 @@ class Canister(object):
             session.cookie = self.cookie
 
             sid = session.cookie.get('ttysid')
-            log.debug(f'Cookie SID: {sid}')
 
             if sid and sid in self.cache:
                 auth = self.cache.get(sid)
-                log.debug(f'Session found: {sid}')
+                log.debug(f'Canister: Session Found: {sid}')
             else:
                 # avoid session id collisions
                 sid = generate.random_bytes()
@@ -374,7 +374,7 @@ class Canister(object):
                 # create session id
                 session.cookie.set('ttysid', sid)
                 auth = self.cache.create(sid)
-                log.debug(f'Session created: {sid}')
+                log.debug(f'Canister: Session Created: {sid}')
 
             session.sid = sid
             session.auth = auth
@@ -385,15 +385,15 @@ class Canister(object):
 
             # user
             hdr = session.cookie.get('ttyhdr')
-            log.debug(f'Cookie TOK: {hdr}')
+            log.debug(f'Canister: Session Header: {hdr}')
 
             if hdr and not session.auth.pol.expired:
                 if session.auth.verify(hdr):
                     session.user = True
                     self.cache.set(sid, auth)
-                    log.info(f'Logged in as: {session.email}')
+                    log.info(f'Canister: Session Registered: {session.email}')
                 else:
-                    log.warning(f'Missing or Invalid token: {hdr}')
+                    log.warn(f'Canister: Missing or Invalid token: {hdr}')
                     return None
 
             if session.sid != sid or session.auth is not auth:
@@ -416,9 +416,9 @@ class Canister(object):
             elapsed = time.time() - start
 
             if elapsed > 1:
-                log.warn('Response: %d (%dms !!!)' % (response.status_code, 1000 * elapsed))
+                log.warn(f'Canister: Response: {response.status_code} ({1000 * elapsed:.3f}ms !!!)')
             else:
-                log.info('Response: %d (%dms)' % (response.status_code, 1000 * elapsed))
+                log.info(f'Canister: Response: {response.status_code} ({1000 * elapsed:.3f}ms)')
 
             return result
 

@@ -18,7 +18,7 @@ import sqlite3
 
 
 class SQLSchema(object):
-    @property
+    @staticmethod
     def user():
         return 'CREATE TABLE user (' \
             'id INTEGER PRIMARY KEY NOT NULL, ' \
@@ -27,7 +27,7 @@ class SQLSchema(object):
             'password TEXT NOT NULL, ' \
             'salt TEXT NOT NULL)'
 
-    @property
+    @staticmethod
     def broker():
         return 'CREATE TABLE broker (' \
             'id INTEGER PRIMARY KEY NOT NULL, ' \
@@ -35,7 +35,7 @@ class SQLSchema(object):
             'key TEXT NOT NULL, ' \
             'secret TEXT NOT NULL)'
 
-    @property
+    @staticmethod
     def record():
         return 'CREATE TABLE record (' \
             'id INTEGER PRIMARY KEY NOT NULL, ' \
@@ -45,7 +45,7 @@ class SQLSchema(object):
             'platform TEXT NOT NULL,' \
             'period TEXT NOT NULL)'
 
-    @property
+    @staticmethod
     def asset(name):
         return f'CREATE TABLE {name} (' \
             'id INTEGER PRIMARY KEY NOT NULL, ' \
@@ -59,7 +59,7 @@ class SQLSchema(object):
             'share_total REAL, ' \
             'period INTEGER NOT NULL)'
 
-    @property
+    @staticmethod
     def setting():
         return 'CREATE TABLE settings (' \
             'id INTEGER PRIMARY KEY NOT NULL, ' \
