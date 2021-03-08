@@ -1,6 +1,6 @@
 bottle
-bcrypt
 Jinja2
 jinja2-time
+jwcrypto
 lxml
-# mysql-connector>=2.2.9
+#mysql-connector

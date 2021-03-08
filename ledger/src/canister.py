@@ -387,7 +387,18 @@ class Canister(object):
             hdr = session.cookie.get('ttyhdr')
             log.debug(f'Canister: Session Header: {hdr}')
 
-            if hdr and not session.auth.pol.expired:
+            # NOTE: Theres an exception that occurs once the session expires.
+            # it is most likely related to the SessionCache...
+            # session.auth.pol (pol specifically) becomes a None type object
+            # causing the expiry to not be checked because the auth object
+            # is del from memory and therefore does not exist.
+            # TODO: If Auth is None then test for Auth only
+            # If Auth exists and never becomes none then check for pol instead
+            if not session.auth:
+                log.warn('Canister: Auth: Auth is None')
+            if not session.auth.pol:
+                log.warn('Canister: Auth: Auth.pol is None')
+            if hdr and not session.auth.pol:
                 if session.auth.verify(hdr):
                     session.user = True
                     self.cache.set(sid, auth)
