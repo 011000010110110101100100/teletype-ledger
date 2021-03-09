@@ -14,7 +14,7 @@
 #
 # You should have received a copy of the GNU Affero General Public License
 #}
-{%- from 'macro.html' import menu_button %}
+{%- from 'macro/nav.html' import nav_button %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -33,11 +33,11 @@
     {% if session.user %}
     <nav>
         <div id="nav" class="root">
-            {{ menu_button('nav-record', 'fas fa-file-alt', 'record') }}
-            {{ menu_button('nav-trade', 'fas fa-chart-bar', 'trade') }}
-            {{ menu_button('nav-portfolio', 'fas fa-chart-pie', 'portfolio') }}
-            {{ menu_button('nav-donate', 'fas fa-donate', 'donate') }}
-            {{ menu_button('nav-menu', 'fas fa-bars', 'menu') }}
+            {{ nav_button('nav-record', 'fas fa-file-alt', 'record') }}
+            {{ nav_button('nav-trade', 'fas fa-chart-bar', 'trade') }}
+            {{ nav_button('nav-portfolio', 'fas fa-chart-pie', 'portfolio') }}
+            {{ nav_button('nav-donate', 'fas fa-donate', 'donate') }}
+            {{ nav_button('nav-menu', 'fas fa-bars', 'menu') }}
         </div>
     </nav>
     {%- endif %}

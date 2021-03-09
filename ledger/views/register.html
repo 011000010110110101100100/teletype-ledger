@@ -16,9 +16,9 @@
 #}
 {% extends 'index.html' %}
 
-{% from 'macro.html' import form_input %}
-{% from 'macro.html' import form_link %}
-{% from 'macro.html' import form_button %}
+{% from 'macro/form.html' import form_input %}
+{% from 'macro/form.html' import form_link %}
+{% from 'macro/form.html' import form_button %}
 
 {% block styles %}
 <link rel="stylesheet" href="/static/styles/article.css">
@@ -28,12 +28,13 @@
 {% block main %}
 <article>
     <section>
-        <header>Login</header>
+        <header>Register</header>
         <form class="form">
             {{ form_input('email', 'Email', 'email', true) }}
             {{ form_input('password', 'Password', 'password', true) }}
-            {{ form_button('Submit') }}
-            {{ form_link(['/register', 'Register'], ['/password-reset', 'Forgot Password?']) }}
+            {{ form_input('repeat', 'Repeat Password', 'password', true) }}
+            {{ form_button('Sumbit') }}
+            {{ form_link('/login', 'Login') }}
         </form>
     </section>
 </article>
@@ -46,12 +47,14 @@
         const section = document.querySelector('section');
         const email = event.target.elements[0];
         const password = event.target.elements[1];
+        const repeat = event.target.elements[2];
         const payload = JSON.stringify({
             "email": email.value,
-            "password": password.value
+            "password": password.value,
+            "repeat": repeat.value
         });
     
-        postSessionRequest('/login', section, payload);
+        postRequestSession('/register', section, payload);
     
         return false;
     };

@@ -398,7 +398,7 @@ class Canister(object):
             # NOTE: if session.auth attributes are None, then a NoneType
             # exception will be raised. this happens because the SessionCleaner
             # thread checks to see if the policy has expired. if the policy
-            # expires, it is then removed from the SessionCache and a new
+            # expires, then it is removed from the SessionCache and a new
             # unset Auth object is created taking its place.
             if hdr and session.auth.pol:
                 if session.auth.verify(hdr):
@@ -406,6 +406,7 @@ class Canister(object):
                     self.cache.set(sid, auth)
                     log.info(f'Canister: Session Registered: {session.email}')
                 else:
+                    session.user = False
                     log.warn(f'Canister: Missing or Invalid token: {hdr}')
                     return None
 

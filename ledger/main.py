@@ -119,6 +119,7 @@ def asset():
 @app.route('/logout')
 @auth_required
 def logout():
+    session.cookie.set('ttysid', '')
     session.cookie.set('ttyhdr', '')
     app.log.info('Logout: session destroyed')
     redirect('/login')
@@ -163,7 +164,7 @@ def login():
         view = flash('Redirect', f'logged in as {email}')
         return payload(view, '/', {}, True)
 
-    return render('session/login.html', session=session)
+    return render('login.html', session=session)
 
 
 @app.route('/register', ['GET', 'POST'])
@@ -220,14 +221,17 @@ def register():
         view = flash('Redirect', f'logged in as {email}')
         return payload(view, '/', {}, True)
 
-    return render('session/register.html', session=session)
+    return render('register.html', session=session)
 
 
 # TODO
 @app.route('/password-reset', ['GET', 'POST'])
 @auth_redirect
 def password_reset():
-    return render('session/reset.html', session=session)
+    if request.method == 'POST':
+        view = flash('Response', f'Nothing was done. Nothing to do.')
+        return payload(view, '/password-reset', {}, False)
+    return render('reset.html', session=session)
 
 
 app.run(host='localhost', port=8080, debug=True, reloader=True)

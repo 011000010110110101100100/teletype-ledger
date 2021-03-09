@@ -14,6 +14,14 @@
 * GNU Affero General Public License for more details.
 *
 * You should have received a copy of the GNU Affero General Public License
+*/
+/*
+* NOTE: all request functions should return a promise...
+* async should be used to gaurentee the promise.
+*
+* NOTE: generic objects named meta are used for simple requests
+* that expect a json response.
+*
 * meta -> Object
 *   meta.url = "localhost:8080/login"
 *   meta.header = "Content-Type"
@@ -22,43 +30,43 @@
 *   meta.payload = Object
 */
 async function getRequest(meta) {
-    let xhr = new XMLHttpRequest();
+    let request = new XMLHttpRequest();
 
-    xhr.open("GET", meta.url);
-    xhr.addEventListener("load", (event) => {
+    request.open('GET', meta.url);
+    request.addEventListener('load', (event) => {
         meta.element.innerHTML = event.target.responseText;
     });
-    xhr.send();
+    request.send();
 
-    return xhr;
+    return request;
 }
 
 
 async function postRequest(meta) {
-    let xhr = new XMLHttpRequest();
+    let request = new XMLHttpRequest();
     let payload = JSON.stringify(meta.payload);
 
-    xhr.open("POST", meta.url);
-    xhr.setRequestHeader(meta.header, meta.value);
-    xhr.addEventListener('load', (event) => {
+    request.open('POST', meta.url);
+    request.setRequestHeader(meta.headerKey, meta.headerValue);
+    request.addEventListener('load', (event) => {
         meta.element.innerHTML = event.target.responseText;
     });
-    xhr.send(payload);
+    request.send(payload);
 
-    return xhr;
+    return request;
 }
 
 
-async function postSessionRequest(path, element, payload) {
+async function postRequestSession(path, element, payload) {
     const request = new XMLHttpRequest();
 
     request.open('POST', path);
     request.setRequestHeader('Content-Type', 'application/json');
     request.onload = function (event) {
         try {
-            let json = JSON.parse(event.target.responseText);
-            element.innerHTML = json.view;
-            setTimeout(() => { window.location = json.path; }, 3000);
+            let response = JSON.parse(event.target.responseText);
+            element.innerHTML = response.view;
+            setTimeout(() => { window.location = response.path; }, 3000);
         } catch(e) {
             console.log(e);
         }

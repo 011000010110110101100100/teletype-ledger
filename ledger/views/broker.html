@@ -15,9 +15,9 @@
 # You should have received a copy of the GNU Affero General Public License
 #}
 {% extends 'index.html' %}
-{% from 'macro.html' import form_dropdown %}
-{% from 'macro.html' import form_input %}
-{% from 'macro.html' import form_button %}
+{% from 'macro/form.html' import form_dropdown %}
+{% from 'macro/form.html' import form_input %}
+{% from 'macro/form.html' import form_button %}
 
 {% block styles %}
 <link rel="stylesheet" href="/static/styles/article.css">
@@ -61,9 +61,9 @@ document.querySelector('form').onsubmit = function (event) {
     });
     console.log(payload);
 
-    postSessionRequest('/broker', section, payload);
+    //postSessionRequest('/broker', section, payload);
 
     return false;
 };
-</script>
+</script>    
 {% endblock %}
