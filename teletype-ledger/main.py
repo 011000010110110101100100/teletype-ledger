@@ -98,16 +98,16 @@ def index():
     return render('index.html', session=session)
 
 
-@app.route('/broker')
-@auth_required
-def broker():
-    return render('broker.html', session=session)
-
-
 @app.route('/record')
 @auth_required
 def record():
     return render('record.html', session=session)
+
+
+@app.route('/broker')
+@auth_required
+def broker():
+    return render('broker.html', session=session)
 
 
 @app.route('/asset')

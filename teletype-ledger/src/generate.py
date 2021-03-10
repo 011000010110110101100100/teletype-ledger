@@ -19,15 +19,13 @@ import random
 
 from src.constant import constant
 
-SIZE = 64
-
 
 def random_bytes(size=None):
     body = str()
 
     if size is None:
         body = base64.urlsafe_b64encode(
-            os.urandom(SIZE)
+            os.urandom(constant.BYTE_SIZE)
         ).decode(constant.ENCODING)
     elif isinstance(size, int):
         body = base64.urlsafe_b64encode(
@@ -46,7 +44,7 @@ def random_str(size=None):
     if size is None:
         body = ''.join(
             random.SystemRandom().choice(constant.SYMBOLS)
-            for _ in range(SIZE - 1)
+            for _ in range(constant.BYTE_SIZE - 1)
         )
     elif isinstance(size, int):
         body = ''.join(

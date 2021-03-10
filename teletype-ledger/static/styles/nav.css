@@ -1,0 +1,112 @@
+/*
+* A web application implementing investment strategies
+* Copyright (C) 2021 011000010110110101100100
+*
+* This program is free software: you can redistribute it and/or modify
+* it under the terms of the GNU Affero General Public License as published
+* by the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU Affero General Public License for more details.
+*/
+nav .main {
+    background-color: var(--background-color);
+    display: flex;
+    flex-flow: row nowrap;
+    position: fixed;
+    bottom: 0px;
+    left: 15%;
+    right: 15%;
+    height: 50px;
+    margin-bottom: 0px;
+}
+
+nav .main .button {
+    color: var(--color);
+    display: flex;
+    flex: auto;
+    align-items: center;
+    justify-content: center;
+    padding: 15px;
+    transition: all var(--timeout) ease-in-out;
+}
+
+nav .main .button:hover {
+    background-color: var(--hover-color);
+}
+
+nav .main .button:focus,
+nav .main .button:active {
+    background-color: var(--focus-color);
+    transform: scale(var(--scale));
+}
+
+nav .main .button .label {
+    margin-left: 10px;
+}
+
+nav .tab {
+    display: flex;
+    flex-flow: row nowrap;
+    flex: auto;
+    margin: 0 auto;
+}
+
+nav .tab .button {
+    align-items: center;
+    background-color: var(--background-color);
+    border-bottom: 1px solid var(--border-color);
+    color: var(--color);
+    display: flex;
+    flex: auto;
+    flex-wrap: nowrap;
+    justify-content: center;
+    height: 50px;
+    transition: all var(--timeout) ease-in-out;
+}
+
+nav .tab .button:hover {
+    background-color: var(--hover-color);
+}
+
+nav .tab .button:focus,
+nav .tab .button:active {
+    background-color: var(--focus-color);
+}
+
+nav .tab .button .icon {
+    font-size: 36px;
+    margin: 5px;
+    padding: 5px;
+}
+
+nav .tab .button .label {
+    font-size: 20px;
+    margin: 5px;
+    padding: 5px;
+}
+
+@media screen and (max-width: 640px) {
+    nav .main {
+        flex: auto;
+        left: 0px;
+        right: 0px;
+    }
+
+    nav .main .button {
+        min-width: 50px;
+    }
+
+    nav .tab {
+        flex: auto;
+        max-width: none;
+    }
+
+    nav .tab .button {
+        flex: auto;
+        min-width: 150px;
+    }
+}

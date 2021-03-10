@@ -40,7 +40,11 @@ class Constant(Singleton):
 
     @property
     def TIMEOUT(self):
-        return 3600
+        return 0  # 3600
+
+    @property
+    def BYTE_SIZE(self):
+        return 64
 
 
 constant = Constant()

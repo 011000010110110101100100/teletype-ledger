@@ -31,17 +31,44 @@
 </head>
 <body>
     {% if session.user %}
-    <nav>
-        <div id="nav" class="root">
+    <nav class="no-select">
+        <div id="nav-main" class="main">
             {{ nav_button('nav-record', 'fas fa-file-alt', 'record') }}
             {{ nav_button('nav-trade', 'fas fa-chart-bar', 'trade') }}
             {{ nav_button('nav-portfolio', 'fas fa-chart-pie', 'portfolio') }}
             {{ nav_button('nav-donate', 'fas fa-donate', 'donate') }}
-            {{ nav_button('nav-menu', 'fas fa-bars', 'menu') }}
+            {{ nav_button('nav-menu', 'fas fa-circle-notch', 'menu') }}
         </div>
     </nav>
     {%- endif %}
     <main>{% block main %}{% endblock %}</main>
+    {% if session.user %}
+    <script>
+        document.querySelector('#nav-main').onclick = function (event) {
+            let div = event.target.closest('div');
+            console.log('closest:', div.id);
+            switch(div.id) {
+                case 'nav-record':
+                    window.location = '/record';
+                    break;
+                case 'nav-trade':
+                    window.location = '/trade';
+                    break;
+                case 'nav-portfolio':
+                    window.location = '/portfolio';
+                    break;
+                case 'nav-donate':
+                    window.location = '/donate';
+                    break;
+                case 'nav-menu':
+                    window.location = '/menu';
+                    break;
+                default:
+                    break;
+            }
+        };
+    </script>
+    {%- endif %}
     {% block scripts %}{%- endblock %}
     <script src="https://kit.fontawesome.com/67be107c28.js" crossorigin="anonymous"></script>
     <!-- add dev tools for mobile -->

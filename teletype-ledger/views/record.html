@@ -1,0 +1,67 @@
+{#
+# A web application implementing investment strategies
+# Copyright (C) 2021 011000010110110101100100
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Affero General Public License as published
+# by the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Affero General Public License for more details.
+#
+# You should have received a copy of the GNU Affero General Public License
+#}
+{% extends 'index.html' %}
+
+{% from 'macro/form.html' import form_dropdown %}
+{% from 'macro/form.html' import form_input %}
+{% from 'macro/form.html' import form_button %}
+
+{% block styles %}
+<link rel="stylesheet" href="/static/styles/article.css">
+<link rel="stylesheet" href="/static/styles/menu.css">
+{% endblock %}
+
+{% block main %}
+<article>
+    <section>
+        <header>Record</header>
+        <nav class="no-select">
+            <div id="nav-record" class="tab">
+                <div id="menu-broker" class="button" title="broker">
+                    <span class="icon fas fa-landmark"></span>
+                    <span class="label">Broker</span>
+                </div>
+                <div id="menu-asset" class="button" title="asset">
+                    <span class="icon fas fa-coins"></span>
+                    <span class="label">Asset</span>
+                </div>
+            </div>
+        </nav>
+        <main></main>
+    </section>
+</article>
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/scripts/request.js"></script>
+<script>
+document.querySelector('form').onsubmit = function (event) {
+    const request = new XMLHttpRequest();
+    const section = document.querySelector('section');
+    const payload = JSON.stringify({
+        "platform": dropdown.value,
+        "key": form.key.value,
+        "secret": form.secret.value
+    });
+    console.log(payload);
+
+    //postSessionRequest('/broker', section, payload);
+
+    return false;
+};
+</script>    
+{% endblock %}

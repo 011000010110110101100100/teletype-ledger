@@ -12,30 +12,3 @@
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 * GNU Affero General Public License for more details.
 */
-.display-none {
-    display: none;
-}
-
-.display-block {
-    display: block;
-}
-
-.display-inline-block {
-    display: inline-block;
-}
-
-.display-flex {
-    display: flex;
-}
-
-.display-inline-flex {
-    display: inline-flex;
-}
-
-.icon-inactive {
-    color: var(--color);
-}
-
-.icon-active {
-    color: var(--icon-color);
-}
