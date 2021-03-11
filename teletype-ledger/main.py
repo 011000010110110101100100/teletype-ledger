@@ -14,6 +14,8 @@
 #
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+import os
+
 from functools import wraps
 
 from bottle import Bottle
@@ -30,6 +32,16 @@ from src.sqlite import SQLSchema
 from src.sqlite import SQLite
 from src.canister import Canister
 from src.canister import session
+
+try:
+    os.mkdir('db')
+except (FileExistsError,):
+    pass
+
+try:
+    os.mkdir('csv')
+except (FileExistsError,):
+    pass
 
 app = Bottle()
 app.config.update('canister', log_level='DEBUG')

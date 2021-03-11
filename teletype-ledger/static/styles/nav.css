@@ -49,7 +49,7 @@ nav .main .button .label {
     margin-left: 10px;
 }
 
-nav .box {
+nav .menu {
     display: flex;
     flex-flow: column wrap;
     flex: auto;
@@ -57,7 +57,7 @@ nav .box {
     width: 65%;
 }
 
-nav .box .tile {
+nav .menu .dropdown .switch {
     align-items: center;
     background-color: var(--background-color);
     border-bottom: 1px solid var(--border-color);
@@ -72,22 +72,22 @@ nav .box .tile {
     transition: all var(--timeout) ease-in-out;
 }
 
-nav .box .tile:hover {
+nav .menu .dropdown .switch:hover {
     background-color: var(--hover-color);
 }
 
-nav .box .tile:focus,
-nav .box .tile:active {
+nav .menu .dropdown .switch:focus,
+nav .menu .dropdown .switch:active {
     background-color: var(--focus-color);
 }
 
-nav .box .tile .icon {
+nav .menu .dropdown .switch .icon {
     font-size: 28px;
     margin: 5px;
     padding: 5px;
 }
 
-nav .box .tile .label {
+nav .menu .dropdown .switch .label {
     font-size: 20px;
     margin: 5px;
     padding: 5px;
@@ -104,12 +104,12 @@ nav .box .tile .label {
         min-width: 50px;
     }
 
-    nav .box {
+    nav .menu {
         flex: auto;
         width: 100%;
     }
 
-    nav .box .tile {
+    nav .menu .tile {
         flex: auto;
         min-width: 150px;
     }
