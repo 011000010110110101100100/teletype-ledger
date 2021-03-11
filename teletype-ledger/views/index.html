@@ -46,7 +46,7 @@
     <script>
         document.querySelector('#nav-main').onclick = function (event) {
             let div = event.target.closest('div');
-            console.log('closest:', div.id);
+
             switch(div.id) {
                 case 'nav-record':
                     window.location = '/record';

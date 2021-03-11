@@ -101,19 +101,19 @@ def index():
 @app.route('/record')
 @auth_required
 def record():
-    return render('record.html', session=session)
+    return render('record/menu.html', session=session)
 
 
-@app.route('/broker')
+@app.route('/record/broker')
 @auth_required
 def broker():
-    return render('broker.html', session=session)
+    return render('record/broker.html', session=session)
 
 
-@app.route('/asset')
+@app.route('/record/asset')
 @auth_required
 def asset():
-    return render('asset.html', session=session)
+    return render('record/asset.html', session=session)
 
 
 @app.route('/logout')

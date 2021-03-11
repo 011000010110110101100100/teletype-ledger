@@ -22,6 +22,7 @@ nav .main {
     right: 15%;
     height: 50px;
     margin-bottom: 0px;
+    opacity: 85%;
 }
 
 nav .main .button {
@@ -48,42 +49,45 @@ nav .main .button .label {
     margin-left: 10px;
 }
 
-nav .tab {
+nav .box {
     display: flex;
-    flex-flow: row nowrap;
+    flex-flow: column wrap;
     flex: auto;
     margin: 0 auto;
+    width: 65%;
 }
 
-nav .tab .button {
+nav .box .tile {
     align-items: center;
     background-color: var(--background-color);
     border-bottom: 1px solid var(--border-color);
+    border-radius: var(--radius);
     color: var(--color);
     display: flex;
     flex: auto;
     flex-wrap: nowrap;
     justify-content: center;
-    height: 50px;
+    height: 100px;
+    margin-bottom: 15px;
     transition: all var(--timeout) ease-in-out;
 }
 
-nav .tab .button:hover {
+nav .box .tile:hover {
     background-color: var(--hover-color);
 }
 
-nav .tab .button:focus,
-nav .tab .button:active {
+nav .box .tile:focus,
+nav .box .tile:active {
     background-color: var(--focus-color);
 }
 
-nav .tab .button .icon {
-    font-size: 36px;
+nav .box .tile .icon {
+    font-size: 28px;
     margin: 5px;
     padding: 5px;
 }
 
-nav .tab .button .label {
+nav .box .tile .label {
     font-size: 20px;
     margin: 5px;
     padding: 5px;
@@ -100,12 +104,12 @@ nav .tab .button .label {
         min-width: 50px;
     }
 
-    nav .tab {
+    nav .box {
         flex: auto;
-        max-width: none;
+        width: 100%;
     }
 
-    nav .tab .button {
+    nav .box .tile {
         flex: auto;
         min-width: 150px;
     }
