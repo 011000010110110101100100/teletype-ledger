@@ -14,65 +14,52 @@
 #
 # You should have received a copy of the GNU Affero General Public License
 #}
-{%- from 'macro/nav.html' import nav_button %}
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
     <title>tty</title>
+
     <link rel="shortcut icon" type="image/png" href="/static/images/favicon.svg">
+
+    <link rel="stylesheet" href='https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css'>
+
     <link rel="stylesheet" href="/static/styles/global.css">
-    <link rel="stylesheet" href="/static/styles/class.css">
     <link rel="stylesheet" href="/static/styles/id.css">
-    <link rel="stylesheet" href="/static/styles/nav.css">
-    {% block styles %}{%- endblock %}
+    <link rel="stylesheet" href="/static/styles/class.css">
+
+    <link rel="stylesheet" href="/static/styles/nav/burger.css">
+    <link rel="stylesheet" href="/static/styles/nav/sidebar.css">
+
+    {% block styles %}
+    {%- endblock %}
 </head>
+
 <body>
     {% if session.user %}
-    <nav class="no-select">
-        <div id="nav-main" class="main">
-            {{ nav_button('nav-record', 'fas fa-file-alt', 'record') }}
-            {{ nav_button('nav-trade', 'fas fa-chart-bar', 'trade') }}
-            {{ nav_button('nav-portfolio', 'fas fa-chart-pie', 'portfolio') }}
-            {{ nav_button('nav-donate', 'fas fa-donate', 'donate') }}
-            {{ nav_button('nav-menu', 'fas fa-circle-notch', 'menu') }}
-        </div>
-    </nav>
+    {% include 'sidebar.html' %}
     {%- endif %}
-    <main>{% block main %}{% endblock %}</main>
-    {% if session.user %}
-    <script>
-        document.querySelector('#nav-main').onclick = function (event) {
-            let div = event.target.closest('div');
 
-            switch(div.id) {
-                case 'nav-record':
-                    window.location = '/record';
-                    break;
-                case 'nav-trade':
-                    window.location = '/trade';
-                    break;
-                case 'nav-portfolio':
-                    window.location = '/portfolio';
-                    break;
-                case 'nav-donate':
-                    window.location = '/donate';
-                    break;
-                case 'nav-menu':
-                    window.location = '/menu';
-                    break;
-                default:
-                    break;
-            }
-        };
-    </script>
+    <main>
+        {% block main %}
+        {% endblock %}
+    </main>
+
+    {% if session.user %}
+    <script src="/static/scripts/nav/burger.js"></script>
+    <script src="/static/scripts/nav/sidebar.js"></script>
     {%- endif %}
-    {% block scripts %}{%- endblock %}
-    <script src="https://kit.fontawesome.com/67be107c28.js" crossorigin="anonymous"></script>
-    <!-- add dev tools for mobile -->
+
+    {% block scripts %}
+    {%- endblock %}
+
+    <script src="https://unpkg.com/boxicons@latest/dist/boxicons.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/eruda"></script>
     <script>eruda.init();</script>
 </body>
+
 </html>

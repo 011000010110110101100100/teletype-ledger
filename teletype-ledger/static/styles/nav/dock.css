@@ -1,0 +1,58 @@
+/*
+* A web application implementing investment strategies
+* Copyright (C) 2021 011000010110110101100100
+*
+* This program is free software: you can redistribute it and/or modify
+* it under the terms of the GNU Affero General Public License as published
+* by the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU Affero General Public License for more details.
+*/
+nav .dock {
+    background-color: var(--background-color);
+    display: flex;
+    flex-flow: row nowrap;
+    position: fixed;
+    bottom: 0px;
+    left: 15%;
+    right: 15%;
+    height: 50px;
+    margin-bottom: 0px;
+    opacity: 85%;
+}
+
+nav .dock .button {
+    color: var(--color);
+    display: flex;
+    flex: auto;
+    align-items: center;
+    justify-content: center;
+    padding: 15px;
+    transition: all var(--timeout) ease-in-out;
+}
+
+nav .dock .button:hover {
+    background-color: var(--hover-color);
+}
+
+nav .dock .button:focus,
+nav .dock .button:active {
+    background-color: var(--focus-color);
+    transform: scale(var(--scale));
+}
+
+@media screen and (max-width: 640px) {
+    nav .dock {
+        flex: auto;
+        left: 0px;
+        right: 0px;
+    }
+
+    nav .dock .button {
+        min-width: 50px;
+    }
+}

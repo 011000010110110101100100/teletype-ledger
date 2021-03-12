@@ -14,8 +14,18 @@
 #
 # You should have received a copy of the GNU Affero General Public License
 #}
-{% macro nav_button(id, class, title) %}
+{% macro button(id, class, title) %}
 <div id="{{id}}" class="button" title="{{title}}">
-    <span class="{{class}}"></span>
+    <i class="{{class}}"></i>
 </div>
 {%- endmacro %}
+
+<nav>
+    <div id="dock" class="dock no-select">
+        {{ button('dock-record', 'fas fa-file-alt', 'record') }}
+        {{ button('dock-trade', 'fas fa-chart-bar', 'trade') }}
+        {{ button('dock-portfolio', 'fas fa-chart-pie', 'portfolio') }}
+        {{ button('dock-donate', 'fas fa-donate', 'donate') }}
+        {{ button('dock-menu', 'fas fa-circle-notch', 'menu') }}
+    </div>
+</nav>
