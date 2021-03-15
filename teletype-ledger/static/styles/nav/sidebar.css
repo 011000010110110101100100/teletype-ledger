@@ -1,0 +1,47 @@
+nav .sidebar {
+    border-right: 1px solid black;
+    bottom: 0;
+    display: flex;
+    flex-flow: column nowrap;
+    left: 0;
+    padding: 5px;
+    position: absolute;
+    top: 0;
+    width: 200px;
+    overflow: scroll;
+}
+
+nav .sidebar .button {
+    align-items: center;
+    flex: 0 1 auto;
+    display: flex;
+    flex-flow: row nowrap;
+    margin: 5px;
+    padding: 5px;
+}
+
+nav .sidebar .button box-icon {
+    flex: 1 1 25%;
+}
+
+nav .sidebar .button .label {
+    flex: 1 1 75%;
+    padding: 5px;
+}
+
+nav .sidebar .dropdown {
+    flex: 0 1 auto;
+    padding: 0 5px;
+}
+
+nav .sidebar .dropdown .switch {
+    margin: 5px;
+}
+
+nav .sidebar .dropdown .select {
+    padding-left: 15px;
+}
+
+nav .sidebar .dropdown .select .option {
+
+}

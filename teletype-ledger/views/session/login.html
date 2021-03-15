@@ -29,7 +29,7 @@
 <article>
     <section>
         <header>Login</header>
-        <form class="form">
+        <form>
             {{ form_input('email', 'Email', 'email', true) }}
             {{ form_input('password', 'Password', 'password', true) }}
             {{ form_button('Submit') }}
@@ -40,7 +40,7 @@
 {% endblock %}
 
 {% block scripts %}
-<script src="/static/scripts/request.js"></script>
+<script src="/static/scripts/lib/request.js"></script>
 <script>
     document.querySelector('form').onsubmit = function (event) {
         const section = document.querySelector('section');

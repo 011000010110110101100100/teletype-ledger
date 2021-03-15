@@ -1,0 +1,58 @@
+{#
+# A web application implementing investment strategies
+# Copyright (C) 2021 011000010110110101100100
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Affero General Public License as published
+# by the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Affero General Public License for more details.
+#
+# You should have received a copy of the GNU Affero General Public License
+#}
+{% macro switch(class, label) %}
+<div class="switch">
+    <span class="icon {{class}}"></span>
+    <span class="label">{{label}}</span>
+</div>
+{%- endmacro %}
+
+{% macro option(classes, labels) %}
+<div class="view">
+    {% for class, label in zip(classes, labels) %}
+    <div class="button">
+        <span class="icon {{class}}"></span>
+        <span class="label">{{label}}</span>
+    </div>
+</div>
+{%- endmacro %}
+
+<nav>
+    <div class="menu no-select">
+        <div class="dropdown">
+            {{ switch('fas fa-coins', 'Asset') }}
+            {{ option(
+                ['fas fa-eye', 'fas fa-file', 'fas fa-trash'], 
+                ['View', 'Create', 'Delete']
+                ) }}
+        </div>
+        <div class="dropdown">
+            {{ switch('fas fa-landmark', 'Broker') }}
+            {{ option(
+                ['fas fa-eye', 'fas fa-file', 'fas fa-trash'], 
+                ['View', 'Create', 'Delete']
+                ) }}
+        </div>
+        <div class="dropdown">
+            {{ switch('fas fa-file-csv', 'CSV') }}
+            {{ option(
+                ['fas fa-file-upload', 'fas fa-file-download'], 
+                ['Import', 'Export']
+                ) }}
+        </div>
+    </div>
+</nav>

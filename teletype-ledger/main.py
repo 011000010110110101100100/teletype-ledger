@@ -176,7 +176,7 @@ def login():
         view = flash('Redirect', f'logged in as {email}')
         return payload(view, '/', {}, True)
 
-    return render('login.html', session=session)
+    return render('session/login.html', session=session)
 
 
 @app.route('/register', ['GET', 'POST'])
@@ -233,7 +233,7 @@ def register():
         view = flash('Redirect', f'logged in as {email}')
         return payload(view, '/', {}, True)
 
-    return render('register.html', session=session)
+    return render('session/register.html', session=session)
 
 
 # TODO
@@ -241,9 +241,9 @@ def register():
 @auth_redirect
 def password_reset():
     if request.method == 'POST':
-        view = flash('Response', f'Nothing was done. Nothing to do.')
+        view = flash('Response', f'This is a dummy response.')
         return payload(view, '/password-reset', {}, False)
-    return render('reset.html', session=session)
+    return render('session/reset.html', session=session)
 
 
 app.run(host='localhost', port=8080, debug=True, reloader=True)

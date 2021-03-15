@@ -26,13 +26,11 @@
 
     <link rel="shortcut icon" type="image/png" href="/static/images/favicon.svg">
 
-    <link rel="stylesheet" href='https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css'>
-
+    <link rel="stylesheet" href="/static/styles/debug.css">
     <link rel="stylesheet" href="/static/styles/global.css">
     <link rel="stylesheet" href="/static/styles/id.css">
     <link rel="stylesheet" href="/static/styles/class.css">
 
-    <link rel="stylesheet" href="/static/styles/nav/burger.css">
     <link rel="stylesheet" href="/static/styles/nav/sidebar.css">
 
     {% block styles %}
@@ -41,7 +39,7 @@
 
 <body>
     {% if session.user %}
-    {% include 'sidebar.html' %}
+    {% include 'nav/sidebar.html' %}
     {%- endif %}
 
     <main>
@@ -50,7 +48,6 @@
     </main>
 
     {% if session.user %}
-    <script src="/static/scripts/nav/burger.js"></script>
     <script src="/static/scripts/nav/sidebar.js"></script>
     {%- endif %}
 
