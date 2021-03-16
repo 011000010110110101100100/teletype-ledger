@@ -1,23 +1,38 @@
 nav .sidebar {
-    border-right: 1px solid black;
     bottom: 0;
+    border-right: 1px solid lightgray;
     display: flex;
     flex-flow: column nowrap;
     left: 0;
-    padding: 5px;
     position: absolute;
     top: 0;
     width: 200px;
-    overflow: scroll;
+    overflow-y: scroll;
+    overflow-x: hidden;
 }
 
 nav .sidebar .button {
     align-items: center;
+    color: var(--color);
     flex: 0 1 auto;
     display: flex;
     flex-flow: row nowrap;
-    margin: 5px;
-    padding: 5px;
+    padding: 10px;
+    text-decoration: none;
+    transition: all var(--timeout) ease-in-out;
+}
+
+nav .sidebar .button:hover {
+    background-color: var(--hover-color);
+}
+
+nav .sidebar .button:active {
+    background-color: var(--active-color);
+    transform: scale(var(--scale-focus));
+}
+
+nav .sidebar .button:focus, {
+    background-color: var(--focus-color);
 }
 
 nav .sidebar .button box-icon {
@@ -29,19 +44,18 @@ nav .sidebar .button .label {
     padding: 5px;
 }
 
-nav .sidebar .dropdown {
+nav .sidebar .group {
+    align-items: center;
     flex: 0 1 auto;
-    padding: 0 5px;
+    justify-content: center;
 }
 
-nav .sidebar .dropdown .switch {
-    margin: 5px;
+nav .sidebar .group .display {
+    display: flex;
+    flex-flow: column nowrap;
+    flex: 0 1 auto;
 }
 
-nav .sidebar .dropdown .select {
-    padding-left: 15px;
-}
-
-nav .sidebar .dropdown .select .option {
-
+nav .sidebar .group .hide {
+    display: none;
 }

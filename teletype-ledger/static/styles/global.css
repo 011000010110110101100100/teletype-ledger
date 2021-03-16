@@ -13,9 +13,9 @@
 * GNU Affero General Public License for more details.
 */
 :root {
+    /* Generic */
     --delay: 500ms;
     --timeout: 200ms;
-    --scale: 0.95;
     --radius: 0.625em;
     --size-s: 0.875em;
     --size-m: 1em;
@@ -25,15 +25,25 @@
     --width-part: 95%;
     --width-full: 100%;
     --letter-spacing: 0.1875em;
+    
+    --scale: 0.95;
+    --scale-hover: 1.02;
+    --scale-focus: 0.97;
+
+    /* Webkit */
+    --wk-scrollbar-width: 5px;
+
+    /* Gecko */
+    --gk-scrollbar-width: thin;
 
     /* Applied Theme */
     --lt-color: black;
     --lt-background-color: #fafafa;
     --lt-border-color: darkgray;
 
-    --lt-hover-color: #d5e7ff;
-    --lt-focus-color: #aaccff;
-    --lt-active-color: #eef5ff;
+    --lt-hover-color: #aaccff;
+    --lt-active-color: #d5e7ff;
+    --lt-focus-color: #eef5ff;
 
     --lt-icon-color: #bd2424;
 
@@ -48,6 +58,9 @@
     --lt-form-input-color: #fafafa;
 
     --lt-table-caption-color: #f5f5f5;
+
+    --lt-scrollbar-color: lightgray;
+    --lt-scrollbar-background-color: #fafafa;
 
     /* Dark Theme */
     --dk-color: white;
@@ -72,6 +85,9 @@
 
     --dk-table-caption-color: #212121;
 
+    --dk-scrollbar-color: lightgray;
+    --dk-scrollbar-background-color: black;
+
     /* Applied Theme */
     --color: var(--lt-color);
     --background-color: var(--lt-background-color);
@@ -94,6 +110,9 @@
     --form-input-color: var(--lt-form-input-color);
 
     --table-caption-color: var(--lt-table-caption-color);
+
+    --scrollbar-color: var(--lt-scrollbar-color);
+    --scrollbar-background-color: var(--lt-scrollbar-background-color);
 }
 
 * {
@@ -101,13 +120,22 @@
     font: 1em sans-serif, Helvetica, Verdana, Arial;
     margin: 0;
     padding: 0;
+    scrollbar-color: var(--scrollbar-color) var(--scrollbar-background-color);
+    scrollbar-width: var(--gk-scrollbar-width);
+}
+
+*::-webkit-scrollbar {
+    background-color: var(--scrollbar-background-color);
+    width: var(--wk-scrollbar-width);
+}
+
+*::-webkit-scrollbar-thumb {
+    background-color: var(--scrollbar-color);
 }
 
 body {
     background-color: var(--background-color);
     color: var(--color);
-    margin: 0 auto;
-    padding-bottom: 3.125em;
     width: var(--width-part);
 }
 

@@ -1,3 +1,19 @@
+{#
+# A web application implementing investment strategies
+# Copyright (C) 2021 011000010110110101100100
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Affero General Public License as published
+# by the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Affero General Public License for more details.
+#
+# You should have received a copy of the GNU Affero General Public License
+#}
 <nav>
     <div id="sidebar" class="sidebar no-select">
         <a id="sidebar-burger" class="button" href="#">
@@ -12,57 +28,57 @@
             <box-icon type="regular" name="line-chart"></box-icon>
             <span class="label">Trade</span>
         </a>
-        <div class="dropdown">
-            <div id="sidebar-asset" class="switch">
+        <div class="group">
+            <a id="sidebar-asset" class="button" href="#">
                 <box-icon type="regular" name="coin"></box-icon>
                 <span class="label">Asset</span>
-            </div>
-            <div class="select">
-                <a id="sidebar-asset-view" class="option" href="#">
+            </a>
+            <div class="display">
+                <a id="sidebar-asset-view" class="button" href="#">
                     <box-icon type="regular" name="folder-open"></box-icon>
                     <span class="label">View</span>
                 </a>
-                <a id="sidebar-asset-create" class="option" href="#">
+                <a id="sidebar-asset-create" class="button" href="#">
                     <box-icon type="solid" name="file-plus"></box-icon>
                     <span class="label">Create</span>
                 </a>
-                <a id="sidebar-asset-delete" class="option" href="#">
+                <a id="sidebar-asset-delete" class="button" href="#">
                     <box-icon type="regular" name="trash"></box-icon>
                     <span class="label">Delete</span>
                 </a>
             </div>
         </div>
-        <div class="dropdown">
-            <div id="sidebar-broker" class="switch">
+        <div class="group">
+            <a id="sidebar-broker" class="button" href="#">
                 <box-icon type="regular" name="store"></box-icon>
                 <span class="label">Broker</span>
-            </div>
-            <div class="select">
-                <a id="sidebar-broker-view" class="option" href="#">
+            </a>
+            <div class="display">
+                <a id="sidebar-broker-view" class="button" href="#">
                     <box-icon type="regular" name="folder-open"></box-icon>
                     <span class="label">View</span>
                 </a>
-                <a id="sidebar-broker-create" class="option" href="#">
+                <a id="sidebar-broker-create" class="button" href="#">
                     <box-icon type="solid" name="file-plus"></box-icon>
                     <span class="label">Create</span>
                 </a>
-                <a id="sidebar-broker-delete" class="option" href="#">
+                <a id="sidebar-broker-delete" class="button" href="#">
                     <box-icon type="regular" name="trash"></box-icon>
                     <span class="label">Delete</span>
                 </a>
             </div>
         </div>
-        <div class="dropdown">
-            <div id="sidebar-csv" class="switch">
+        <div class="group">
+            <a id="sidebar-csv" class="button" href="#">
                 <box-icon type="regular" name="file"></box-icon>
                 <span class="label">CSV</span>
-            </div>
-            <div class="select">
-                <a id="sidebar-csv-import" class="option" href="#">
+            </a>
+            <div class="display">
+                <a id="sidebar-csv-import" class="button" href="#">
                     <box-icon type="regular" name="upload"></box-icon>
                     <span class="label">Import</span>
                 </a>
-                <a id="sidebar-csv-export" class="option" href="#">
+                <a id="sidebar-csv-export" class="button" href="#">
                     <box-icon type="regular" name="download"></box-icon>
                     <span class="label">Export</span>
                 </a>
@@ -72,17 +88,17 @@
             <box-icon type="regular" name="wrench"></box-icon>
             <span class="label">Tools</span>
         </a>
-        <div class="dropdown">
-            <div id="sidebar-theme" class="switch">
+        <div class="group">
+            <a id="sidebar-theme" class="button" href="#">
                 <box-icon type="regular" name="certification"></box-icon>
                 <span class="label">Theme</span>
-            </div>
-            <div class="select">
-                <a id="sidebar-theme-light" class="option" href="#">
+            </a>
+            <div class="display">
+                <a id="sidebar-theme-light" class="button" href="#">
                     <box-icon type="regular" name="sun"></box-icon>
                     <span class="label">Light</span>
                 </a>
-                <a id="sidebar-theme-dark" class="option" href="#">
+                <a id="sidebar-theme-dark" class="button" href="#">
                     <box-icon type="regular" name="moon"></box-icon>
                     <span class="label">Dark</span>
                 </a>
@@ -96,9 +112,9 @@
             <box-icon type="regular" name="help-circle"></box-icon>
             <span class="label">Help</span>
         </a>
-        <a id="sidebar-logout" class="button" href="#">
+        <a id="sidebar-logout" class="button" href="/logout">
             <box-icon type="regular" name="log-out-circle"></box-icon>
             <span class="label">Logout</span>
         </a>
     </div>
-<nav>
+</nav>
