@@ -13,37 +13,50 @@
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 * GNU Affero General Public License for more details.
 */
-class List extends Array {
-    remove(index) {
-        let array = this.splice(index);
-        let element = array.shift();
-        while (array.length) {
-            this.push(array.shift());
+const sidebarToggle = function (element) {
+    let container = element.nextElementSibling;    
+
+    if (container.className === 'display') {
+        container.className = 'display-none';
+    } else {
+        container.className = 'display';
+    }
+};
+
+class Sidebar {
+    constructor() {
+        let burger = document.querySelector('#sidebar-burger');
+        let asset = document.querySelector('#sidebar-asset');
+        let broker = document.querySelector('#sidebar-broker');
+        let csv = document.querySelector('#sidebar-csv');
+        let theme = document.querySelector('#sidebar-theme');
+        
+        let containers = [asset, broker, csv, theme];
+
+        for (let container of containers) {
+            sidebarToggle(container);
         }
-        return element;
-    }
 
-    insert(index, ...items) {
-        let array = this.splice(index);
-        array.unshift(...items);
-        while (array.length) {
-            this.push(array.shift());
-        }
-    }
-
-    next(index, step=1) {
-        return this[index + step];
-    }
-
-    prev(index, step=1) {
-        return this[index - step];
-    }
-
-    peek(index=0, step=1) {  // start at the end of array
-        return this[this.length - index - step];
-    }
-
-    clone() {
-        return this.slice(0);
+        this.element = document.querySelector('#sidebar'); 
+        this.burger = burger;
+        this.asset = asset;
+        this.broker = broker;
+        this.csv = csv;
+        this.theme = theme;
     }
 }
+
+const sidebar = new Sidebar();
+
+sidebar.element.onclick = function (event) {
+    let button = event.target.closest('a');
+    switch (button.id) {
+        case 'sidebar-asset':
+        case 'sidebar-broker':
+        case 'sidebar-csv':
+        case 'sidebar-theme':
+            sidebarToggle(button);
+            break;
+    }
+    console.log('button.id:', button.id);
+};

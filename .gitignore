@@ -129,5 +129,5 @@ dmypy.json
 .pyre/
 
 # sqlite
-teletype-ledger/db
-teletype-ledger/csv
+db/
+csv/

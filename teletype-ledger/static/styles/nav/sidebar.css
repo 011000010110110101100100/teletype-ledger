@@ -51,6 +51,7 @@ nav .sidebar .group {
 }
 
 nav .sidebar .group .display {
+    background-color: #f0f0f0;
     display: flex;
     flex-flow: column nowrap;
     flex: 0 1 auto;
