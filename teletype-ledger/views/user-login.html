@@ -16,46 +16,43 @@
 #}
 {% extends 'index.html' %}
 
-{% from 'macro/form.html' import form_input %}
-{% from 'macro/form.html' import form_link %}
-{% from 'macro/form.html' import form_button %}
+{% from 'macro-form.html' import form_input %}
+{% from 'macro-form.html' import form_link %}
+{% from 'macro-form.html' import form_button %}
 
 {% block styles %}
-<link rel="stylesheet" href="/static/styles/article.css">
-<link rel="stylesheet" href="/static/styles/form.css">
+<link rel="stylesheet" href="/static/styles/ui-article.css">
+<link rel="stylesheet" href="/static/styles/ui-form.css">
 {% endblock %}
 
 {% block main %}
 <article>
     <section>
-        <header>Register</header>
-        <form class="form">
+        <header>Login</header>
+        <form>
             {{ form_input('email', 'Email', 'email', true) }}
             {{ form_input('password', 'Password', 'password', true) }}
-            {{ form_input('repeat', 'Repeat Password', 'password', true) }}
-            {{ form_button('Sumbit') }}
-            {{ form_link('/login', 'Login') }}
+            {{ form_button('Submit') }}
+            {{ form_link(['/register', 'Register'], ['/password-reset', 'Forgot Password?']) }}
         </form>
     </section>
 </article>
 {% endblock %}
 
 {% block scripts %}
-<script src="/static/scripts/lib/request.js"></script>
+<script src="/static/scripts/lib-request.js"></script>
 <script>
     document.querySelector('form').onsubmit = function (event) {
         const section = document.querySelector('section');
         const email = event.target.elements[0];
         const password = event.target.elements[1];
-        const repeat = event.target.elements[2];
         const payload = JSON.stringify({
             "email": email.value,
-            "password": password.value,
-            "repeat": repeat.value
+            "password": password.value
         });
     
-        postRequestSession('/register', section, payload);
-    
+        postRequestSession('/login', section, payload);
+
         return false;
     };
 </script>

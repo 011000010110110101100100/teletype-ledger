@@ -110,22 +110,16 @@ def index():
     return render('index.html', session=session)
 
 
-@app.route('/record')
-@auth_required
-def record():
-    return render('record/menu.html', session=session)
-
-
 @app.route('/record/broker')
 @auth_required
 def broker():
-    return render('record/broker.html', session=session)
+    return render('record-broker.html', session=session)
 
 
 @app.route('/record/asset')
 @auth_required
 def asset():
-    return render('record/asset.html', session=session)
+    return render('record-asset.html', session=session)
 
 
 @app.route('/logout')
@@ -176,7 +170,7 @@ def login():
         view = flash('Redirect', f'logged in as {email}')
         return payload(view, '/', {}, True)
 
-    return render('session/login.html', session=session)
+    return render('user-login.html', session=session)
 
 
 @app.route('/register', ['GET', 'POST'])
@@ -233,7 +227,7 @@ def register():
         view = flash('Redirect', f'logged in as {email}')
         return payload(view, '/', {}, True)
 
-    return render('session/register.html', session=session)
+    return render('user-register.html', session=session)
 
 
 # TODO
@@ -243,7 +237,7 @@ def password_reset():
     if request.method == 'POST':
         view = flash('Response', f'This is a dummy response.')
         return payload(view, '/password-reset', {}, False)
-    return render('session/reset.html', session=session)
+    return render('user-password-reset.html', session=session)
 
 
 app.run(host='localhost', port=8080, debug=True, reloader=True)

@@ -15,40 +15,27 @@
 # You should have received a copy of the GNU Affero General Public License
 #}
 {% extends 'index.html' %}
-{% from 'macro/form.html' import form_dropdown %}
-{% from 'macro/form.html' import form_input %}
-{% from 'macro/form.html' import form_button %}
+{% from 'macro-form.html' import form_dropdown %}
+{% from 'macro-form.html' import form_input %}
+{% from 'macro-form.html' import form_button %}
 
 {% block styles %}
-<link rel="stylesheet" href="/static/styles/article.css">
-<link rel="stylesheet" href="/static/styles/form.css">
+<link rel="stylesheet" href="/static/styles/ui-article.css">
+<link rel="stylesheet" href="/static/styles/ui-form.css">
 {% endblock %}
-
-{%- set strategies = [
-    'Dollar Cost Average', 
-    'Dynamic Dollar Cost Average', 
-    'Dollar Value Average', 
-    'Dynamic Dollar Value Average', 
-    'Free Trade'
-] %}
 
 {%- set platforms = [
     'Coinbase', 'Coinbase Pro', 'Kraken', 'Gemini', 'Robinhood'
 ] %}
 
-{%- set periods = [
-    'Daily', 'Weekly', 'Monthly'
-] %}
-
 {% block main %}
 <article>
     <section>
-        <header>Asset</header>
+        <header>Broker</header>
         <form class="form">
-            {{ form_input('name', 'Name', 'text', true) }}
-            {{ form_dropdown('Strategy', 'strategy', 'Select Strategy', strategies) }}
             {{ form_dropdown('Platform', 'platform', 'Select Platform', platforms) }}
-            {{ form_dropdown('Period', 'period', 'Select Period', periods) }}
+            {{ form_input('key', 'Key', 'text', true) }}
+            {{ form_input('secret', 'Secret', 'password', true) }}
             {{ form_button('Submit') }}
         </form>
     </section>
@@ -56,22 +43,14 @@
 {% endblock %}
 
 {% block scripts %}
-<script src="/static/scripts/list.js"></script>
-<script src="/static/scripts/state.js"></script>
-<script src="/static/scripts/dropdown.js"></script>
-<script src="/static/scripts/request.js"></script>
+<script src="/static/scripts/lib-list.js"></script>
+<script src="/static/scripts/lib-state.js"></script>
+<script src="/static/scripts/lib-dropdown.js"></script>
+<script src="/static/scripts/lib-request.js"></script>
 <script>
-function set_dropdown(selector) {
-    let element = document.querySelector(selector);
-    let dropdown = new FormDropdown(element);
-    dropdown.hide();
-    return dropdown;
-}
-
-const strategy = set_dropdown('#strategy');
-const platform = set_dropdown('#platform');
-const period = set_dropdown('#period');
-
+const platform = document.querySelector('#platform');
+const dropdown = new FormDropdown(platform);
+dropdown.hide();
 document.querySelector('form').onsubmit = function (event) {
     const request = new XMLHttpRequest();
     const section = document.querySelector('section');
