@@ -11,6 +11,10 @@ nav .sidebar {
     overflow-x: hidden;
 }
 
+nav .sidebar-collapse {
+   width: 60px; 
+}
+
 nav .sidebar .button {
     align-items: center;
     color: var(--color);

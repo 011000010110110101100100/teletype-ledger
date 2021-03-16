@@ -13,13 +13,31 @@
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 * GNU Affero General Public License for more details.
 */
-const sidebarToggle = function (element) {
+const toggleSidebarSubmenu = function (element) {
     let container = element.nextElementSibling;    
 
     if (container.className === 'display') {
         container.className = 'display-none';
     } else {
         container.className = 'display';
+    }
+};
+
+const toggleSidebarBurger = function (sidebar) {
+    let labels = sidebar.element.querySelectorAll('span');
+
+    if (sidebar.element.classList.contains('sidebar-collapse')) {
+        for (let label of labels) {
+            label.className = 'label';
+        }
+
+        sidebar.element.classList.remove('sidebar-collapse');
+    } else {
+        for (let label of labels) {
+            label.className = 'display-none';
+        }
+
+        sidebar.element.classList.add('sidebar-collapse');
     }
 };
 
@@ -34,7 +52,7 @@ class Sidebar {
         let containers = [asset, broker, csv, theme];
 
         for (let container of containers) {
-            sidebarToggle(container);
+            toggleSidebarSubmenu(container);
         }
 
         this.element = document.querySelector('#sidebar'); 
@@ -43,6 +61,8 @@ class Sidebar {
         this.broker = broker;
         this.csv = csv;
         this.theme = theme;
+
+        toggleSidebarBurger(this);
     }
 }
 
@@ -51,11 +71,14 @@ const sidebar = new Sidebar();
 sidebar.element.onclick = function (event) {
     let button = event.target.closest('a');
     switch (button.id) {
+        case 'sidebar-burger':
+            toggleSidebarBurger(sidebar);
+            break;
         case 'sidebar-asset':
         case 'sidebar-broker':
         case 'sidebar-csv':
         case 'sidebar-theme':
-            sidebarToggle(button);
+            toggleSidebarSubmenu(button);
             break;
     }
     console.log('button.id:', button.id);
